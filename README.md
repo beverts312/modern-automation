@@ -1,32 +1,32 @@
-# You've added your first ReadMe file!
-A README.md file is intended to quickly orient readers to what your project can do.  New to Markdown? [Learn more](http://go.microsoft.com/fwlink/p/?LinkId=524306&clcid=0x409)
+# Ansible Cloud Formation automation for creating Docker Swarm clusters
 
-## Edit this ReadMe and commit your change to a topic branch
-In Git, branches are cheap.  You should use them whenever you're making changes to your repository.  Edit this file by clicking on the edit icon.
+Scalable Docker Swarm cluster deployment using the combination of AWS CloudFormation to create resources (such as EC2, VPC, AutoScaling etc..) and Ansible to automate the process with a single command.
 
-Then make some changes to this ReadMe file.
+If a Stack already exist with the given stack name, it will update. Otherwise creates a new stack from scratch.
 
-> Make some **edits** to _this_ blockquote
+#### Quickstart Guide:
 
-When you are done, click the dropdown arrow next to the save button - that will allow you to commit your changes to a new branch.
+1. Install Docker and Ansible on your local and clone this repo.
 
-## Create a pull request to contribute your changes back into master
-Pull requests are the way to move changes from a topic branch back into the master branch.
+2. Edit `group_vars/all/credentials.yml.example` and change it as `group_vars/all/credentials.yml`
 
-Click on the **Pull Requests** page in the **CODE** hub, then click "New Pull Request" to create a new pull request from your topic branch to the master branch.
+3. Edit `group_vars/all/common.yml` as it fits your needs.
 
-When you are done adding details, click "Create Pull request". Once a pull request is sent, reviewers can see your changes, recommend modifications, or even push follow-up commits.
+4. Make sure to create a keypair in AWS IAM.
 
-First time creating a pull request?  [Learn more](http://go.microsoft.com/fwlink/?LinkId=533211&clcid=0x409)
+5. Crete the CloudFront Stack using Ansible
+``` shell
+ansible-playbook aws_create_swarm_cluster.yml  --extra-vars "cf_stack_name=<clusters name> cf_cluster_size=<cluster size>"
+```
 
-### Congratulations! You've completed the grand tour of the CODE hub!
+6. Once the Stack creation is complete, Ansible will out provide the output of Swarm Master as related information. You can also view your CloudFormation site and view the "Outputs" of your created stack.
 
-# Next steps
+7. Optional: If you are using boot2docker, you may want to disable tsl on your local via `unset DOCKER_TLS_VERIFY`.
 
-If you haven't done so yet:
-* [Install Visual Studio](http://go.microsoft.com/fwlink/?LinkId=309297&clcid=0x409&slcid=0x409)
-* [Install Git](http://git-scm.com/downloads)
+8. From your local, connecto Swarm Master and see info: `docker -H tcp://<MasterPublicIP>:2375 info`
 
-Then clone this repo to your local machine to get started with your own project.
+9. An example deployment to all nodes from your local: `docker -H tcp://<MasterPublicIP>:2375 run -d -p 80:80 nginx`
 
-Happy coding!
+#### TODO list:
+- Make CoreOS file flexible instead of baked into the template.
+- Add 1.9 networking to the 9th step as an example.
