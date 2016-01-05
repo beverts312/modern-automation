@@ -1,6 +1,6 @@
 FROM python
 
-RUN pip install ansible -y
+RUN pip install ansible
 
 ENV WORKDIR=/apps/ansible
 
