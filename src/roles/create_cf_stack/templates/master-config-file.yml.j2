@@ -35,4 +35,4 @@ coreos:
 
         [Service]
         Restart=no
-        ExecStart=/usr/bin/docker run --name docker-swarm -d -p 2375:2375 swarm manage {{ discovery_service_url.content | replace("http", "etcd") }}
+        ExecStart=/usr/bin/docker run --name docker-swarm -d -p 2375:2375 swarm manage --replication {{ discovery_service_url.content | replace("http", "etcd") }}
