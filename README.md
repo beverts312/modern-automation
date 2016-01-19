@@ -1,3 +1,5 @@
+https://github.com/ansible/ansible-docker-base  
+
 # Ansible Cloud Formation automation for creating Docker Swarm clusters
 
 Scalable Docker Swarm cluster deployment using the combination of AWS CloudFormation to create resources (such as EC2, VPC, AutoScaling etc..) and Ansible to automate the process with a single command.
