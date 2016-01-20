@@ -3,6 +3,11 @@ cf_instance_type: t2.nano
 cf_region: us-west-2
 cf_cluster_size: 3
 cf_vpc_azs: "{{ cf_region }}a,{{ cf_region }}b,{{ cf_region }}c"
+advertised_ip_address: public
+
+
 cf_stack_name: ##CLUSTER_NAME##
 cf_cluster_size: ##CLUSTER_SIZE##
-advertised_ip_address: public
+aws_access_key: ##AWS_ACCESS##
+aws_secret_key: ##AWS_SECRET##
+aws_keypair: ##AWS_KEYPAIR##
