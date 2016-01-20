@@ -8,7 +8,8 @@ RUN apt-get update && \
     apt-add-repository ppa:ansible/ansible && \
     apt-get update && \
     apt-get install -y ansible &&\
-    echo '[local]\nlocalhost\n' > /etc/ansible/hosts
+    echo '[local]\nlocalhost\n' > /etc/ansible/hosts  &&\
+    pip install boto
 
 ADD /playbooks ${WORKDIR}
 ADD start.sh ${WORKDIR}/start.sh
