@@ -11,7 +11,7 @@ The tokens that are replaced are provided via environmental variables.
 ## Playbooks  
 AWS Swarm Playbooks from [Uluc's Github](https://github.com/ulucaydin/ansible-docker-swarm)  
 
-### aws_create_swarm_cluster.ym  
+### aws_create_swarm_cluster.yml  
 Creates CoreOS Swarm Cluster on AWS.  
 These are the required variables:  
 
@@ -24,7 +24,7 @@ These are the required variables:
 |CLUSTER_NAME|Stack Name   |  
 *Must be in us-west-2.
   
-### aws_destroy_swarm_cluster.ym  
+### aws_destroy_swarm_cluster.yml (untested)  
 Destroys CoreOS Swarm Cluster on AWS.  
 These are the required variables:  
 
