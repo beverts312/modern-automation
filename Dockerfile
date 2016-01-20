@@ -18,4 +18,4 @@ ENV CLUSTER_SIZE=3
 ENV CLUSTER_NAME=docker
 ENV EXTRA_VARS="cf_stack_name=${CLUSTER_NAME} cf_cluster_size=${CLUSTER_SIZE}"
 
-ENTRYPOINT ["start.sh"]
+ENTRYPOINT ["/apps/ansible/start.sh"]
