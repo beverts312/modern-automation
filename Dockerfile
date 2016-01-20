@@ -10,7 +10,7 @@ RUN apt-get update && \
     apt-get install -y ansible &&\
     echo '[local]\nlocalhost\n' > /etc/ansible/hosts
 
-ADD /paybooks ${WORKDIR}
+ADD /playbooks ${WORKDIR}
 RUN chmod +x ${WORKDIR}/setcreds.sh
 
 ENV PLAYBOOK=aws_create_swarm_cluster.yml
