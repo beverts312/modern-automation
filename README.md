@@ -8,6 +8,7 @@ Use the `$PLAYBOOK` variable to choose the playbook to run (i.e `aws_create_swar
 All the other variables will be playbook specific. The variables exist in `/group_vars/all/common.yml.template` and are surrounded by `##`, these are replaced when the the container starts by some perl in `start.sh`.  
 
 ## Playbooks  
+AWS Swarm Playbooks from [Uluc's Github](https://github.com/ulucaydin/ansible-docker-swarm)  
 
 ### aws_create_swarm_cluster.ym  
 Creates CoreOS Swarm Cluster on AWS.  
@@ -22,4 +23,12 @@ These are the required variables:
 |CLUSTER_NAME|Stack Name   |  
 *Must be in us-west-2.
   
-AWS Swarm Playbooks: https://github.com/ulucaydin/ansible-docker-swarm  
+### aws_destroy_swarm_cluster.ym  
+Destroys CoreOS Swarm Cluster on AWS.  
+These are the required variables:  
+
+|Variable    |Description  |
+|------------|-------------|
+|AWS_ACCESS  |AWS Key      |
+|AWS_SECRET  |AWS Secret   |
+|CLUSTER_NAME|Stack Name   |  
