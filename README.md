@@ -17,7 +17,7 @@ git clone https://beverts.visualstudio.com/DefaultCollection/Main/_git/ansible
 cd ansible
 ```
 3. Set the AWS_ACCESS,AWS_SECRET,AWS_KEYPAIR environmental variables on your local machine.  
-4. Start with `docker-compose`:  
+4. Start with `docker-compose`(the `docker-compose.yml` file in this directory runs a playbook to create a cluster of size 3):  
 ```
 docker-compose up
 ```  
