@@ -1,0 +1,30 @@
+{% include 'cloud-init-common.yml.j2' %}
+
+    - name: docker.service
+      command: start
+      drop-ins:
+            - name: 10-swarm.conf
+              content: |
+                [Service]
+                Environment=\"DOCKER_OPTS=-H unix:///var/run/docker.sock --label type=web\"
+    - name: docker-swarm.service
+      command: start
+      content: |
+        [Unit]
+        Description=Swarm service
+        After=docker.service
+
+        [Service]
+        Restart=no
+        ExecStart=/usr/bin/docker run --name docker-swarm -d swarm join --addr=${{ advertised_ip_address }}_ipv4:2375 etcd://", { "Fn::GetAtt" : [ "MasterLoadBalancer", "DNSName" ] }, ":2379/swarm
+
+    - name: registrator.service
+      command: start
+      content: |
+        [Unit]
+        Description=Swarm service
+        After=docker.service
+
+        [Service]
+        Restart=no
+        ExecStart=/usr/bin/docker run -d --restart=always -v /var/run/docker.sock:/tmp/docker.sock -h $private_ipv4 beverts312/registrator etcd://", { "Fn::GetAtt" : [ "MasterLoadBalancer", "DNSName" ] }, ":2379

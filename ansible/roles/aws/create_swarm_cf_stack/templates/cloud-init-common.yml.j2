@@ -8,10 +8,6 @@ coreos:
     listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
     listen-peer-urls: http://${{ advertised_ip_address }}_ipv4:2380
   units:
-    - name: etcd2.service
-      command: start
-    - name: fleet.service
-      command: start
     - name: docker-tcp.socket
       command: start
       enable: true
@@ -20,19 +16,9 @@ coreos:
         Description=Docker Socket for the API
 
         [Socket]
-        ListenStream=4243
+        ListenStream=2375
         BindIPv6Only=both
         Service=docker.service
 
         [Install]
         WantedBy=sockets.target
-    - name: docker-swarm.service
-      command: start
-      content: |
-        [Unit]
-        Description=Swarm service
-        After=docker.service
-
-        [Service]
-        Restart=no
-        ExecStart=/usr/bin/docker run --name docker-swarm -d -p 2375:2375 swarm manage {{ discovery_service_url.content | replace("http", "etcd") }}

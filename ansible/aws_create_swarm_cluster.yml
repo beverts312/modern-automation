@@ -4,4 +4,4 @@
 - hosts: localhost
   connection: local
   roles:
-  - create_cf_stack
+  - aws/create_swarm_cf_stack

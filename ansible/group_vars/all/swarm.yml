@@ -1,0 +1,10 @@
+---
+
+number_of_swarm_masters: 3
+number_of_app_nodes: 3
+number_of_web_nodes: 3
+
+certificate_country: US
+certificate_state: TX
+certificate_locality: Westlake 
+certificate_ou: PI

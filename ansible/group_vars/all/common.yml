@@ -1,0 +1,20 @@
+---
+
+# Number of nodes to start
+# For C2C K8s, initial node will be master and rest will be minions.
+#number_of_nodes: 9
+
+# c2c or aws
+environment_type: c2c
+
+# defaults file for dp-ansible
+http_proxy: http.proxy.fmr.com
+ec2_jvm_args: "-Dhttps.proxyHost=http.proxy.fmr.com -Dhttps.proxyPort=8000 -Dhttp.proxyHost=http.proxy.fmr.com -Dhttp.proxyPort=8000"
+ubuntu_version: 14.04
+ssh_key_name: dpansible #auto generated, no need to change
+
+# pip vars
+pip_download_dest: /tmp
+pip_version:
+python: python
+pip: pip
