@@ -11,7 +11,7 @@ RUN apt-get update && \
     echo '[local]\nlocalhost\n' > /etc/ansible/hosts  &&\
     pip install boto
 
-ADD /playbooks ${WORKDIR}
+ADD /ansible ${WORKDIR}
 ADD start.sh ${WORKDIR}/start.sh
 
 ENTRYPOINT ["/apps/ansible/start.sh"]
