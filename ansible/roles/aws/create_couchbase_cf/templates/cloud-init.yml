@@ -1,0 +1,48 @@
+#cloud-config\n
+write_files:
+- path: /etc/systemd/system/docker.service.d/increase-ulimit.conf
+  owner: core:core
+  permissions: 0644
+  content: |
+    [Service]
+    LimitMEMLOCK=infinity
+- path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
+  owner: core:core
+  permissions: 0644
+  content: |
+    [Socket]
+    ListenStream=127.0.0.1:49153
+- path: /opt/couchbase/var/.README
+  owner: core:core
+  permissions: 0644
+  content: |
+    Couchbase /opt/couchbase/var data volume in container mounted here
+- path: /var/lib/cbfs/data/.README
+  owner: core:core
+  permissions: 0644
+  content: |
+    CBFS files are stored here
+            "coreos:
+etcd:
+    discovery: {{ discovery_service_url.content }}
+    advertise-client-urls: http://${{ advertised_ip_address }}_ipv4:2379
+    initial-advertise-peer-urls: http://${{ advertised_ip_address }}_ipv4:2380
+    listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+    listen-peer-urls: http://${{ advertised_ip_address }}_ipv4:2380
+units:
+  - name: etcd.service
+    command: start
+  - name: fleet.service
+    command: start
+  - name: docker.service
+    command: restart\n"
+  - name: couchbase.service
+    command: start
+    content: |
+      [Unit]
+      Description=Swarm service
+      After=docker.service
+      
+      [Service]
+      Restart=no
+      ExecStart=/usr/bin/docker run -d -v ~/couchbase:/opt/couchbase/var --net=host couchbase/server
