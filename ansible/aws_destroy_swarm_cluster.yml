@@ -4,4 +4,4 @@
 - hosts: localhost
   connection: local
   roles:
-  - aws/destroy_swarm_cf_stack
+  - aws/destroy_swarm_cf
