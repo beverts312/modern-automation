@@ -301,7 +301,7 @@
         "LoadBalancerNames" : [ { "Ref" : "NodeLoadBalancer" } ],
         "MinSize" : "3",
         "MaxSize" : "12",
-        "DesiredCapacity" : { "Ref" : "NodeClusterSize"},
+        "DesiredCapacity" : { "Ref" : "ClusterSize"},
         "Tags": [
           { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "Node" ] ] }, "PropagateAtLaunch" : "true" }
         ]
