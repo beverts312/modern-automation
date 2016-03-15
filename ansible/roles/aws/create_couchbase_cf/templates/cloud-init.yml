@@ -18,7 +18,7 @@ units:
   - name: fleet.service
     command: start
   - name: docker.service
-    command: restart\n"
+    command: restart
   - name: couchbase.service
     command: start
     content: |
