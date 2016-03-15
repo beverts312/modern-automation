@@ -12,9 +12,6 @@ units:
       command: start
     - name: fleet.service
       command: start
-          - name: docker.service
-      command: start
-      drop-ins:
     - name: docker.service
       command: start
       drop-ins:
