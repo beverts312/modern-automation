@@ -21,7 +21,7 @@ units:
             - name: 10-docker.conf
               content: |
                 [Service]
-                Environment=\"DOCKER_OPTS=-H unix:///var/run/docker.sock"
+                Environment=\"DOCKER_OPTS=-H unix:///var/run/docker.sock\"
     - name: couchbase.service
       command: start
       content: |
