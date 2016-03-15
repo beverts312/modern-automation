@@ -26,8 +26,10 @@
     template_parameters:
       AllowDiscoveryFrom: "{{ cf_allowed_etcd_discovery_from }}"
       DiscoveryURL: "{{ discovery_service_url.content }}"
-      InstanceType: "{{ cf_instance_type }}"
-      ClusterSize: "{{ number_of_nodes }}"
+      MasterInstanceType: "{{ master_instance_type }}"
+      DataInstanceType: "{{ data_instance_type }}"
+      MasterNodeCount: "{{ number_of_master_nodes }}"
+      DataNodeCount: "{{ number_of_data_nodes }}"
       KeyName: "{{ aws_keypair }}"
       VpcAvailabilityZones: "{{ cf_vpc_azs }}"
     tags:

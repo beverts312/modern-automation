@@ -10,3 +10,9 @@ cf_web_instance_type: t2.nano
 cf_allowed_swarm_master_control_from: 0.0.0.0/0
 cf_allowed_etcd_discovery_from: 0.0.0.0/0
 advertised_ip_address: private
+
+#CloudFormation - Couchbase
+master_instance_type: t2.micro
+master_node_count: 1
+data_instance_type: t2.micro
+data_node_count: 1
