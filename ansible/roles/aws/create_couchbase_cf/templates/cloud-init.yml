@@ -6,23 +6,6 @@ write_files:
   content: |
     [Service]
     LimitMEMLOCK=infinity
-- path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
-  owner: core:core
-  permissions: 0644
-  content: |
-    [Socket]
-    ListenStream=127.0.0.1:49153
-- path: /opt/couchbase/var/.README
-  owner: core:core
-  permissions: 0644
-  content: |
-    Couchbase /opt/couchbase/var data volume in container mounted here
-- path: /var/lib/cbfs/data/.README
-  owner: core:core
-  permissions: 0644
-  content: |
-    CBFS files are stored here
-            "coreos:
 etcd:
     discovery: {{ discovery_service_url.content }}
     advertise-client-urls: http://${{ advertised_ip_address }}_ipv4:2379
@@ -40,9 +23,9 @@ units:
     command: start
     content: |
       [Unit]
-      Description=Swarm service
+      Description=Couchbase service
       After=docker.service
       
       [Service]
       Restart=no
-      ExecStart=/usr/bin/docker run -d -v ~/couchbase:/opt/couchbase/var --net=host couchbase/server
+      ExecStart=/usr/bin/docker run -d -p 8091:8091 -p 8092:8092 -p 11207:11207 -p 11210:11210 -p 11211:11211 -p 11214:11214 -p 11215:11215 -p 18091:18091 -p 18092:18092 -v ~/couchbase:/opt/couchbase/var --net=host couchbase/server
