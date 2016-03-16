@@ -1,8 +1,5 @@
-#Dockerized Ansible  
-This image makes it easy to run playbooks from anywhere.  
+# Automation  
+This repo is used for storing various code/documentation related to automated deployments / processes in the cloud.  
 
-## How it works  
-The script `start.sh` is what runs when the image starts. 
-This first replaces the tokens in `/group_vars/all/common.yml.template` and then starts a playbook.  
-Use the `$PLAYBOOK` variable to choose the playbook to run (i.e `aws_create_swarm_cluster.yml`).  
-The tokens that are replaced are provided via environmental variables.  
+## Ansible  
+Ansible is a simple ssh based automation tool written in python. The files in the ansible directory in this repo are a collection of playbooks and the things they need to run.
