@@ -1,9 +1,0 @@
-ansible:
-  image: beverts312/ansible
-  environment:
-    - AWS_ACCESS=${AWS_ACCESS}
-    - AWS_SECRET=${AWS_SECRET}
-    - AWS_KEYPAIR=${AWS_KEYPAIR}
-    - CLUSTER_SIZE=3
-    - CLUSTER_NAME=docker-test
-    - PLAYBOOK=aws_create_swarm_cluster.yml
