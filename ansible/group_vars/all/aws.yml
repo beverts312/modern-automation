@@ -1,12 +1,12 @@
 ---
 #CloudFormation - All
-cf_app_instance_type: t2.nano
-cf_region: us-west-2
-cf_vpc_azs: "{{ cf_region }}a,{{ cf_region }}b,{{ cf_region }}c"
+cf_region: us-east-1
+cf_vpc_azs: "{{ cf_region }}a,{{ cf_region }}c,{{ cf_region }}d"
 
 #CloudFormation - Swarm
 cf_master_instance_type: t2.nano
 cf_web_instance_type: t2.nano
+cf_app_instance_type: t2.nano
 cf_allowed_swarm_master_control_from: 0.0.0.0/0
 cf_allowed_etcd_discovery_from: 0.0.0.0/0
 advertised_ip_address: private
