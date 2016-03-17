@@ -59,7 +59,7 @@
     "AppNodeClusterSize" : {
       "Type" : "Number",
       "Default" : "3",
-      "MinValue" : "3",
+      "MinValue" : "1",
       "MaxValue" : "12",
       "Description" : "Number of Swarm Node instances. Please set it a multiple of AZ count."
     },
@@ -67,7 +67,7 @@
     "WebNodeClusterSize" : {
       "Type" : "Number",
       "Default" : "3",
-      "MinValue" : "3",
+      "MinValue" : "1",
       "MaxValue" : "12",
       "Description" : "Number of Swarm Node instances. Please set it a multiple of AZ count."
     },
@@ -75,7 +75,7 @@
     "MasterClusterSize" : {
       "Type" : "Number",
       "Default" : "3",
-      "MinValue" : "3",
+      "MinValue" : "1",
       "MaxValue" : "12",
       "Description" : "Number of Swarm Master instances. Please make it same as the number of AZs."
     },
