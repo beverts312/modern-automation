@@ -1,6 +1,5 @@
 ---
 
-# Destroy the given Stack via Cloud Formation
 - hosts: localhost
   connection: local
   roles:
