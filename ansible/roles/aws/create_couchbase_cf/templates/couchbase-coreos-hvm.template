@@ -354,7 +354,7 @@
   },
 
   "Outputs" : {
-    "NodeDockerPs" : {
+    "AdminUI" : {
       "Description" : "Admin UI",
       "Value" : { "Fn::Join" : [ "", [ "http://", { "Fn::GetAtt" : [ "NodeLoadBalancer", "DNSName" ] }, ":8091" ] ] }
     }

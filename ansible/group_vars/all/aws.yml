@@ -13,6 +13,9 @@ advertised_ip_address: private
 
 #CloudFormation - Couchbase
 master_instance_type: t2.micro
-master_node_count: 1
+number_of_master_nodes: 1
 data_instance_type: t2.micro
-data_node_count: 1
+number__of_data_nodes: 1
+admin_user: Administrator
+admin_password: password
+cluster_ram_quota: 1024
