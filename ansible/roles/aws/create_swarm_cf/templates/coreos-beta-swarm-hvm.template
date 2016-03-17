@@ -535,7 +535,7 @@
         "VPCZoneIdentifier" : [ { "Fn::Join" : [",", [ { "Ref" : "PubSubnetAz1" }, { "Ref" : "PubSubnetAz2" }, { "Ref" : "PubSubnetAz3" } ] ] } ],
         "LaunchConfigurationName" : { "Ref" : "MasterLaunchConfiguration" },
         "LoadBalancerNames" : [ { "Ref" : "MasterLoadBalancer" } ],
-        "MinSize" : "3",
+        "MinSize" : "1",
         "MaxSize" : "12",
         "DesiredCapacity" : { "Ref" : "MasterClusterSize"},
         "Tags": [
@@ -552,7 +552,7 @@
         "VPCZoneIdentifier" : [ { "Fn::Join" : [",", [ { "Ref" : "PubSubnetAz1" }, { "Ref" : "PubSubnetAz2" }, { "Ref" : "PubSubnetAz3" } ] ] } ],
         "LaunchConfigurationName" : { "Ref" : "WebNodeLaunchConfiguration" },
         "LoadBalancerNames" : [ { "Ref" : "WebNodeLoadBalancer" } ],
-        "MinSize" : "3",
+        "MinSize" : "1",
         "MaxSize" : "12",
         "DesiredCapacity" : { "Ref" : "WebNodeClusterSize"},
         "Tags": [
@@ -568,7 +568,7 @@
           [ { "Fn::Select" : [ "0", { "Ref" : "VpcAvailabilityZones" } ] }, { "Fn::Select" : [ "1", { "Ref" : "VpcAvailabilityZones" } ] }, { "Fn::Select" : [ "2", { "Ref" : "VpcAvailabilityZones" } ] } ],
         "VPCZoneIdentifier" : [ { "Fn::Join" : [",", [ { "Ref" : "PubSubnetAz1" }, { "Ref" : "PubSubnetAz2" }, { "Ref" : "PubSubnetAz3" } ] ] } ],
         "LaunchConfigurationName" : { "Ref" : "AppNodeLaunchConfiguration" },
-        "MinSize" : "3",
+        "MinSize" : "1",
         "MaxSize" : "12",
         "DesiredCapacity" : { "Ref" : "AppNodeClusterSize"},
         "Tags": [
