@@ -28,7 +28,7 @@
   
 - name: Join other masters
   shell: "couchbase-cli server-add -c {{ master_ip }}:8091 -u {{ admin_user }} -p {{ admin_password }} --server-add={{ item }}:8091 --server-add-username={{ admin_user }} --server-add-password={{ admin_password }}"
-  with_items: other_master_ips
+  with_items: other_master_private_ips
   
 - name: Wait for data nodes to be ready
   uri:
@@ -45,7 +45,7 @@
   # same as masters right now
 - name: Join Data Nodes
   shell: "couchbase-cli server-add -c {{ master_ip }}:8091 -u {{ admin_user }} -p {{ admin_password }} --server-add={{ item }}:8091 --server-add-username={{ admin_user }} --server-add-password={{ admin_password }}"  
-  with_items: data_ips
+  with_items: data_private_ips
   
 - name: Rebalance
   shell: "couchbase-cli rebalance -c {{ master_ip }}:8091 -u {{ admin_user }} -p {{ admin_password }}"
