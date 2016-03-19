@@ -10,7 +10,7 @@
     cloud_config: "{{ lookup('template', '../templates/cloud-init.yml') | replace('\r\n', '\\n') }}"
 
 - set_fact:
-    cf_template: "{{ lookup('template', 'couchbase-coreos-hvm.template') }}"
+    cf_template: "{{ lookup('template', 'couchbase-coreos-hvm.json') }}"
 
 - name: Save the generated CF template file
   local_action: copy content="{{ cf_template }}" dest=./cf_template
