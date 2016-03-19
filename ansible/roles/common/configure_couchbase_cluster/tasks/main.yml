@@ -1,11 +1,46 @@
 ---
 
+- name: Wait for main node to be ready
+  uri:
+    url: "{{ master_ip }}:8092"
+    method: GET
+    return_content: yes
+    HEADER_Content-Type: "application/json"
+  register: api_response
+  until: api_response.status.find("200") > -1
+  retries: 500
+  delay: 8
+
 - name: Configure main node
   shell: "couchbase-cli cluster-init -c {{ master_ip }}:8091  --cluster-init-username={{ admin_user }} --cluster-init-password={{ admin_password }} --cluster-init-port=8091 --cluster-init-ramsize={{ cluster_ram_quota }}" 
 
+- name: Wait for other masters to be ready
+  uri:
+    url: "{{ item }}:8092"
+    method: GET
+    return_content: yes
+    HEADER_Content-Type: "application/json"
+  register: api_response
+  until: api_response.status.find("200") > -1
+  retries: 500
+  delay: 8
+  with_items: other_master_ips
+  
 - name: Join other masters
   shell: "couchbase-cli server-add -c {{ master_ip }}:8091 -u {{ admin_user }} -p {{ admin_password }} --server-add={{ item }}:8091 --server-add-username={{ admin_user }} --server-add-password={{ admin_password }}"
   with_items: other_master_ips
+  
+- name: Wait for data nodes to be ready
+  uri:
+    url: "{{ item }}:8092"
+    method: GET
+    return_content: yes
+    HEADER_Content-Type: "application/json"
+  register: api_response
+  until: api_response.status.find("200") > -1
+  retries: 500
+  delay: 8
+  with_items: data_ips
   
   # same as masters right now
 - name: Join Data Nodes
