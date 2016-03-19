@@ -7,6 +7,19 @@
     return_content: yes
     HEADER_Content-Type: "application/json"
   register: api_response
+#  until: api_response.status.find("200") > -1
+#  retries: 500
+#  delay: 8
+
+- debug: msg={{ api_response }}
+
+- name: Wait for main node to be ready
+  uri:
+    url: "{{ master_ip }}:8092"
+    method: GET
+    return_content: yes
+    HEADER_Content-Type: "application/json"
+  register: api_response
   until: api_response.status.find("200") > -1
   retries: 500
   delay: 8
