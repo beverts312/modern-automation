@@ -8,7 +8,7 @@
   delay: 8
 
 - name: Configure main node
-  shell: "couchbase-cli cluster-init -c {{ master_ip }}:8091  --cluster-init-username={{ admin_user }} --cluster-init-password={{ admin_password }} --cluster-init-port=8091 --cluster-init-ramsize={{ cluster_ram_quota }}" 
+  shell: "couchbase-cli cluster-init -c {{ master_ip }}:8091  --cluster-init-username={{ admin_user }} --cluster-init-password={{ admin_password }} --cluster-init-port=8091 --cluster-init-ramsize={{ cluster_ram_quota }} --services=data,index,query" 
 
 - name: Wait for other masters to be ready
   shell: curl --head --silent http://{{ item }}:8092/
@@ -19,7 +19,7 @@
   with_items: other_master_ips
   
 - name: Join other masters
-  shell: "couchbase-cli server-add -c {{ master_ip }}:8091 -u {{ admin_user }} -p {{ admin_password }} --server-add={{ item }}:8091 --server-add-username={{ admin_user }} --server-add-password={{ admin_password }}"
+  shell: "couchbase-cli server-add -c {{ master_ip }}:8091 -u {{ admin_user }} -p {{ admin_password }} --server-add={{ item }}:8091 --server-add-username={{ admin_user }} --server-add-password={{ admin_password }} --services=data,index,query"
   with_items: other_master_private_ips
   
 - name: Wait for data nodes to be ready
