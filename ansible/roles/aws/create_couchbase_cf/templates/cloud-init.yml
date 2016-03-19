@@ -28,4 +28,4 @@ coreos:
 
         [Service]
         Restart=no
-        ExecStart=/usr/bin/docker run -d -p 8091:8091 -p 8092:8092 -p 21101:21101 -p 4369:4369 -v /home/core/couchbase:/opt/couchbase/var --net=host couchbase:community-4.0.0
+        ExecStart=/usr/bin/docker run -d -p 8091:8091 -p 8092:8092 -p 21101:21101 -p 4369:4369 -p 11211:11211 -v /home/core/couchbase:/opt/couchbase/var --net=host couchbase:community-4.0.0
