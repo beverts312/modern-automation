@@ -1,5 +1,7 @@
 ---
 
+- debug: msg="http://{{ master_ip }}:8092/"
+
 - name: Wait for main node to be ready
   uri:
     url: "http://{{ master_ip }}:8092/"
