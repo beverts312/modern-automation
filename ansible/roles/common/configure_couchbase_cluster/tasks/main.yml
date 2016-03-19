@@ -7,26 +7,16 @@
     return_content: yes
     HEADER_Content-Type: "application/json"
   register: api_response
-
-- debug: var=api_response
-
-- name: Wait for main node to be ready
-  uri:
-    url: "http://{{ master_ip }}:8092/"
-    method: GET
-    return_content: yes
-    HEADER_Content-Type: "application/json"
-  register: api_response
   until: api_response.content.find("Welcome") > -1
   retries: 500
   delay: 8
 
-- name: Configure main node
-  shell: "couchbase-cli cluster-init -c {{ master_ip }}:8091  --cluster-init-username={{ admin_user }} --cluster-init-password={{ admin_password }} --cluster-init-port=8091 --cluster-init-ramsize={{ cluster_ram_quota }}" 
+#- name: Configure main node
+#  shell: "couchbase-cli cluster-init -c {{ master_ip }}:8091  --cluster-init-username={{ admin_user }} --cluster-init-password={{ admin_password }} --cluster-init-port=8091 --cluster-init-ramsize={{ cluster_ram_quota }}" 
 
 - name: Wait for other masters to be ready
   uri:
-    url: "{{ item }}:8092/"
+    url: "http://{{ item }}:8092/"
     method: GET
     return_content: yes
     HEADER_Content-Type: "application/json"
@@ -42,7 +32,7 @@
   
 - name: Wait for data nodes to be ready
   uri:
-    url: "{{ item }}:8092/"
+    url: "http://{{ item }}:8092/"
     method: GET
     return_content: yes
     HEADER_Content-Type: "application/json"
