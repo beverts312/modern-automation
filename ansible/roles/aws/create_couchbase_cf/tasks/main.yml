@@ -39,28 +39,3 @@
       Stack: "ansible-cloudformation"
       Owner: "{{ aws_owner }}"
   register: stack_creation_response
-  
-- name: Get Master Nodes Info
-  ec2_remote_facts:
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
-    region: "{{ cf_region }}"
-    filters:
-      instance-state-name: running
-      "tag:CouchbaseRole": Master
-  register: couchbase_masters
-
-- name: Get Data Nodes Info
-  ec2_remote_facts:
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
-    region: "{{ cf_region }}"  
-    filters:
-      instance-state-name: running
-      "tag:CouchbaseRole": Data
-  register: couchbase_data
-
-- set_fact:
-    master_ip="{{lookup('dig', couchbase_masters.instances[0].public_dns_name)}}"
-    other_master_ips="{% for item in couchbase_masters.instances %}{% if not loop.first %}[ '{{ item.private_ip }}' ]{% if not loop.last %} + {% endif %}{% endif %}{% endfor%}"
-    data_ips="{% for item in couchbase_data.instances %}[ '{{ item.private_ip }}' ]{% if not loop.last %} + {% endif %}{% endfor%}"  
