@@ -332,6 +332,7 @@
         "DesiredCapacity" : { "Ref" : "MasterNodeCount"},
         "Tags": [
           { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "Node" ] ] }, "PropagateAtLaunch" : "true" }
+          { "Key" : "CouchbaseRole", "Value" : "Master", "PropagateAtLaunch" : "true" }
         ]
       }
     },
@@ -348,6 +349,7 @@
         "DesiredCapacity" : { "Ref" : "DataNodeCount"},
         "Tags": [
           { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "Node" ] ] }, "PropagateAtLaunch" : "true" }
+          { "Key" : "CouchbaseRole", "Value" : "Data", "PropagateAtLaunch" : "true" }          
         ]
       }
     }

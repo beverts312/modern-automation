@@ -39,3 +39,15 @@
 
 - name: Stack Output
   debug: msg="{{ stack_creation_response.stack_outputs }}"
+  
+- name: Get Master Nodes Info
+  ec2_remote_facts:
+    filters:
+      "tag:CouchbaseRole": Master
+  register: couchbase_masters
+
+- name: Get Data Nodes Info
+  ec2_remote_facts:
+    filters:
+      "tag:CouchbaseRole": Data
+  register: couchbase_data
