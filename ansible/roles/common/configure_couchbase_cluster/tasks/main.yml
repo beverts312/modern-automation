@@ -2,7 +2,7 @@
 
 - name: Wait for main node to be ready
   uri:
-    url: "http://{{ master_ip }}:8092"
+    url: "http://{{ master_ip }}:8092/"
     method: GET
     return_content: yes
     HEADER_Content-Type: "application/json"
