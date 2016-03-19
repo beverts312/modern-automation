@@ -8,6 +8,7 @@
     HEADER_Content-Type: "application/json"
   register: api_response
   until: api_response is defined
+  ignore_errors: yes
   retries: 500
   delay: 8
 
