@@ -1,14 +1,9 @@
 ---
 
 - name: Wait for main node to be ready
-  uri:
-    url: "http://{{ master_ip }}:8092/"
-    method: GET
-    return_content: yes
-    HEADER_Content-Type: "application/json"
-  register: api_response
-  until: api_response is defined
-  ignore_errors: yes
+  shell: curl --head --silent http://{{ master_ip }}:8092/
+  register: result
+  until: result.stdout.find("200 OK") != -1
   retries: 500
   delay: 8
 
@@ -16,13 +11,9 @@
   shell: "couchbase-cli cluster-init -c {{ master_ip }}:8091  --cluster-init-username={{ admin_user }} --cluster-init-password={{ admin_password }} --cluster-init-port=8091 --cluster-init-ramsize={{ cluster_ram_quota }}" 
 
 - name: Wait for other masters to be ready
-  uri:
-    url: "http://{{ item }}:8092/"
-    method: GET
-    return_content: yes
-    HEADER_Content-Type: "application/json"
-  register: api_response
-  until: api_response is defined
+  shell: curl --head --silent http://{{ item }}:8092/
+  register: result
+  until: result.stdout.find("200 OK") != -1
   retries: 500
   delay: 8
   with_items: other_master_ips
@@ -32,13 +23,9 @@
   with_items: other_master_private_ips
   
 - name: Wait for data nodes to be ready
-  uri:
-    url: "http://{{ item }}:8092/"
-    method: GET
-    return_content: yes
-    HEADER_Content-Type: "application/json"
-  register: api_response
-  until: api_response is defined
+  shell: curl --head --silent http://{{ item }}:8092/
+  register: result
+  until: result.stdout.find("200 OK") != -1
   retries: 500
   delay: 8
   with_items: data_ips
