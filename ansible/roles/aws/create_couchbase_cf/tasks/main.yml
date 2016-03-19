@@ -60,3 +60,6 @@
     filters:
       "tag:CouchbaseRole": Data
   register: couchbase_data
+  
+  - debug: var=couchbase_data verbosity=2
+  - debug: var=couchbase_masters verbosity=2
