@@ -61,6 +61,6 @@
       "tag:CouchbaseRole": Data
   register: couchbase_data
   
-  - debug: msg="{{ couchbase_data }}"
+  - debug: var=couchbase_data
   
-  - debug: msg="{{ couchbase_masters }}"
+  - debug: var=couchbase_masters
