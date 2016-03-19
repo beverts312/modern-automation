@@ -62,3 +62,15 @@
     master_ip="{{lookup('dig', couchbase_masters.instances[0].public_dns_name)}}"
     other_master_ips="{% for item in couchbase_masters.instances %}{% if not loop.first %}[ '{{lookup('dig', item.public_dns_name)}}' ]{% if not loop.last %} + {% endif %}{% endif %}{% endfor%}"
     data_ips="{% for item in couchbase_data.instances %}[ '{{lookup('dig', item.public_dns_name)}}' ]{% if not loop.last %} + {% endif %}{% endfor%}"  
+    
+- name: master
+  debug: msg="{{ item }}"
+  with_items: master_ip
+
+- name: other masters
+  debug: msg="{{ item }}"
+  with_items: other_master_ips
+
+- name: data
+  debug: msg="{{ item }}"
+  with_items: data_ips
