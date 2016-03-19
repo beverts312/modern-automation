@@ -1,7 +1,7 @@
 ---
 
 -  set_fact:
-    number_of_nodes: {{ number_of_master_nodes }} + {{ number_of_data_nodes }}
+    number_of_nodes: "{{ number_of_master_nodes }}" + "{{ number_of_data_nodes }}"
 
 - name: Get a new Discovery Service url
   uri:
