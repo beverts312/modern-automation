@@ -18,30 +18,27 @@
 - name: Save the generated CF template file
   local_action: copy content="{{ cf_template }}" dest=./cf_template
 
-#- name: Create a new Stack using the given params and template
-#  cloudformation:
-#    state: "present"
-#    stack_name: "{{ cf_stack_name }}"
-#    aws_access_key: "{{ aws_access_key }}"
-#    aws_secret_key: "{{ aws_secret_key }}"
-#    template: "cf_template"
-#    region: "{{ cf_region }}"
-#    template_parameters:
-#      AllowDiscoveryFrom: "{{ cf_allowed_etcd_discovery_from }}"
-#      DiscoveryURL: "{{ discovery_service_url.content }}"
-#      MasterInstanceType: "{{ master_instance_type }}"
-#      DataInstanceType: "{{ data_instance_type }}"
-#      MasterNodeCount: "{{ number_of_master_nodes }}"
-#      DataNodeCount: "{{ number_of_data_nodes }}"
-#      KeyName: "{{ aws_keypair }}"
-#      VpcAvailabilityZones: "{{ cf_vpc_azs }}"
-#    tags:
-#      Stack: "ansible-cloudformation"
-#      Owner: "{{ aws_owner }}"
-#  register: stack_creation_response
-
-#- name: Stack Output
-#  debug: msg="{{ stack_creation_response.stack_outputs }}"
+- name: Create a new Stack using the given params and template
+  cloudformation:
+    state: "present"
+    stack_name: "{{ cf_stack_name }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    template: "cf_template"
+    region: "{{ cf_region }}"
+    template_parameters:
+      AllowDiscoveryFrom: "{{ cf_allowed_etcd_discovery_from }}"
+      DiscoveryURL: "{{ discovery_service_url.content }}"
+      MasterInstanceType: "{{ master_instance_type }}"
+      DataInstanceType: "{{ data_instance_type }}"
+      MasterNodeCount: "{{ number_of_master_nodes }}"
+      DataNodeCount: "{{ number_of_data_nodes }}"
+      KeyName: "{{ aws_keypair }}"
+      VpcAvailabilityZones: "{{ cf_vpc_azs }}"
+    tags:
+      Stack: "ansible-cloudformation"
+      Owner: "{{ aws_owner }}"
+  register: stack_creation_response
   
 - name: Get Master Nodes Info
   ec2_remote_facts:
@@ -60,5 +57,16 @@
     filters:
       "tag:CouchbaseRole": Data
   register: couchbase_data
+
+- set_fact:
+    master_ip="{{lookup('dig', couchbase_masters.instances[0].public_dns_name)}}"
+    other_master_ips="{% for item in couchbase_masters.instances %}{% if not loop.first %}[ lookup('dig', item.public_dns_name) ]{% endif %}{% if not loop.last %} + {% endif %}{% endfor%}"
+    data_ips="{% for item in couchbase_masters %}[ lookup('dig', item.public_dns_name) ]{% if not loop.last %} + {% endif %}{% endfor%}"  
     
-- debug: msg="{{lookup('dig', couchbase_data.instances[0].public_dns_name)}}"
+- debug: msg="{{_master_ip}}"
+
+- debug: msg="{{item}}"
+  with_items: other_master_ips
+
+- debug: msg="{{item}}"
+  with_items: data_ips
