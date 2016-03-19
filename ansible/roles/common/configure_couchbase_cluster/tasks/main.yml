@@ -4,7 +4,7 @@
   shell: curl --head --silent http://{{ master_ip }}:8092/
   register: result
   until: result.stdout.find("200 OK") != -1
-  retries: 500
+  retries: 100
   delay: 8
 
 - name: Configure main node
@@ -14,7 +14,7 @@
   shell: curl --head --silent http://{{ item }}:8092/
   register: result
   until: result.stdout.find("200 OK") != -1
-  retries: 500
+  retries: 50
   delay: 8
   with_items: other_master_ips
   
@@ -26,7 +26,7 @@
   shell: curl --head --silent http://{{ item }}:8092/
   register: result
   until: result.stdout.find("200 OK") != -1
-  retries: 500
+  retries: 50
   delay: 8
   with_items: data_ips
   
@@ -37,4 +37,7 @@
   
 - name: Rebalance
   shell: "couchbase-cli rebalance -c {{ master_ip }}:8091 -u {{ admin_user }} -p {{ admin_password }}"
+  
+- name: Visit your cluster in the browser
+  debug: msg=http://{{ master_ip }}:8091
       
