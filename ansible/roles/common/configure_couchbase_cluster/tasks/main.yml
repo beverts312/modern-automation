@@ -30,9 +30,8 @@
   delay: 8
   with_items: data_ips
   
-  # same as masters right now
 - name: Join Data Nodes
-  shell: "couchbase-cli server-add -c {{ master_ip }}:8091 -u {{ admin_user }} -p {{ admin_password }} --server-add={{ item }}:8091 --server-add-username={{ admin_user }} --server-add-password={{ admin_password }}"  
+  shell: "couchbase-cli server-add -c {{ master_ip }}:8091 -u {{ admin_user }} -p {{ admin_password }} --server-add={{ item }}:8091 --server-add-username={{ admin_user }} --server-add-password={{ admin_password }} --services=data"  
   with_items: data_private_ips
   
 - name: Rebalance
