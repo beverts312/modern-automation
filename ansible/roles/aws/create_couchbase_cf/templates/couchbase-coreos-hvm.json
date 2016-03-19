@@ -331,7 +331,7 @@
         "MaxSize" : "12",
         "DesiredCapacity" : { "Ref" : "MasterNodeCount"},
         "Tags": [
-          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "Node" ] ] }, "PropagateAtLaunch" : "true" }
+          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "Node" ] ] }, "PropagateAtLaunch" : "true" },
           { "Key" : "CouchbaseRole", "Value" : "Master", "PropagateAtLaunch" : "true" }
         ]
       }
@@ -348,7 +348,7 @@
         "MaxSize" : "12",
         "DesiredCapacity" : { "Ref" : "DataNodeCount"},
         "Tags": [
-          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "Node" ] ] }, "PropagateAtLaunch" : "true" }
+          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "Node" ] ] }, "PropagateAtLaunch" : "true" },
           { "Key" : "CouchbaseRole", "Value" : "Data", "PropagateAtLaunch" : "true" }          
         ]
       }
