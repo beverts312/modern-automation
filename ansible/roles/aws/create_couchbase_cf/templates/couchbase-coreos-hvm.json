@@ -197,6 +197,7 @@
         "SecurityGroupIngress" : [
           { "IpProtocol" : "tcp", "FromPort" : "8091", "ToPort" : "8091", "CidrIp" : "0.0.0.0/0" },
           { "IpProtocol" : "tcp", "FromPort" : "8092", "ToPort" : "8092", "CidrIp" : "0.0.0.0/0" },
+          { "IpProtocol" : "tcp", "FromPort" : "4369", "ToPort" : "4369", "CidrIp" : "0.0.0.0/0" },
           { "IpProtocol" : "tcp", "FromPort" : "4001", "ToPort" : "4001", "CidrIp" : { "Fn::GetAtt" : [ "Vpc", "CidrBlock" ] } },
           { "IpProtocol" : "tcp", "FromPort" : "2379", "ToPort" : "2379", "CidrIp" : { "Ref" : "AllowDiscoveryFrom" } },
           { "IpProtocol" : "tcp", "FromPort" : "2380", "ToPort" : "2380", "CidrIp" : { "Fn::GetAtt" : [ "Vpc", "CidrBlock" ] } }
