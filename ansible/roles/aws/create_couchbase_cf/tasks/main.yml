@@ -45,6 +45,8 @@
   
 - name: Get Master Nodes Info
   ec2_remote_facts:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
     region: "{{ cf_region }}"
     filters:
       "tag:CouchbaseRole": Master
@@ -52,6 +54,8 @@
 
 - name: Get Data Nodes Info
   ec2_remote_facts:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
     region: "{{ cf_region }}"  
     filters:
       "tag:CouchbaseRole": Data
