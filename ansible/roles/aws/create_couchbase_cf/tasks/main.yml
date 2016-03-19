@@ -60,7 +60,7 @@
 
 - set_fact:
     master_ip="{{lookup('dig', couchbase_masters.instances[0].public_dns_name)}}"
-    other_master_ips="{% for item in couchbase_masters.instances %}{% if not loop.first %}[ '{{lookup('dig', item.public_dns_name)}}' ]{% endif %}{% if not loop.last %} + {% endif %}{% endfor%}"
+    other_master_ips="{% for item in couchbase_masters.instances %}{% if not loop.first %}[ '{{lookup('dig', item.public_dns_name)}}' ]{% if not loop.last %} + {% endif %}{% endif %}{% endfor%}"
     data_ips="{% for item in couchbase_data.instances %}[ '{{lookup('dig', item.public_dns_name)}}' ]{% if not loop.last %} + {% endif %}{% endfor%}"  
     
 - debug: msg="{{master_ip}}"
