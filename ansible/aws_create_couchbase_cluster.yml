@@ -3,6 +3,6 @@
 - hosts: localhost
   connection: local
   roles:
-#  - aws/create_couchbase_cf
+  - aws/create_couchbase_cf
   - aws/set_couchbase_facts
   - common/configure_couchbase_cluster
