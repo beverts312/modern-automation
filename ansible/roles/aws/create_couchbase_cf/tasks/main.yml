@@ -18,27 +18,27 @@
 - name: Save the generated CF template file
   local_action: copy content="{{ cf_template }}" dest=./cf_template
 
-- name: Create a new Stack using the given params and template
-  cloudformation:
-    state: "present"
-    stack_name: "{{ cf_stack_name }}"
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
-    template: "cf_template"
-    region: "{{ cf_region }}"
-    template_parameters:
-      AllowDiscoveryFrom: "{{ cf_allowed_etcd_discovery_from }}"
-      DiscoveryURL: "{{ discovery_service_url.content }}"
-      MasterInstanceType: "{{ master_instance_type }}"
-      DataInstanceType: "{{ data_instance_type }}"
-      MasterNodeCount: "{{ number_of_master_nodes }}"
-      DataNodeCount: "{{ number_of_data_nodes }}"
-      KeyName: "{{ aws_keypair }}"
-      VpcAvailabilityZones: "{{ cf_vpc_azs }}"
-    tags:
-      Stack: "ansible-cloudformation"
-      Owner: "{{ aws_owner }}"
-  register: stack_creation_response
+#- name: Create a new Stack using the given params and template
+#  cloudformation:
+#    state: "present"
+#    stack_name: "{{ cf_stack_name }}"
+#    aws_access_key: "{{ aws_access_key }}"
+#    aws_secret_key: "{{ aws_secret_key }}"
+#    template: "cf_template"
+#    region: "{{ cf_region }}"
+#    template_parameters:
+#      AllowDiscoveryFrom: "{{ cf_allowed_etcd_discovery_from }}"
+#      DiscoveryURL: "{{ discovery_service_url.content }}"
+#      MasterInstanceType: "{{ master_instance_type }}"
+#      DataInstanceType: "{{ data_instance_type }}"
+#      MasterNodeCount: "{{ number_of_master_nodes }}"
+#      DataNodeCount: "{{ number_of_data_nodes }}"
+#      KeyName: "{{ aws_keypair }}"
+#      VpcAvailabilityZones: "{{ cf_vpc_azs }}"
+#    tags:
+#      Stack: "ansible-cloudformation"
+#      Owner: "{{ aws_owner }}"
+#  register: stack_creation_response
   
 - name: Get Master Nodes Info
   ec2_remote_facts:
