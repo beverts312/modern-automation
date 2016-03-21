@@ -340,7 +340,7 @@
         "SecurityGroups" : [ { "Ref" : "MasterLoadBalancerSecurityGroup" } ],
         "Subnets" : [{ "Ref" : "PubSubnetAz1" }, { "Ref" : "PubSubnetAz2" }, { "Ref" : "PubSubnetAz3" }],
         "Tags": [
-          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "_master_elb" ] ] }, "PropagateAtLaunch" : "true" }
+          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "_master_elb" ] ] } }
         ],
         "Listeners" :
           [ {
