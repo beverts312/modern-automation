@@ -6,3 +6,6 @@
   until: "result.stdout.find(\"Nodes: {{ expected_worker_node_count }}\") != -1"
   retries: 100
   delay: 8
+
+- name: Show cluster info
+  shell: "docker -H {{ swarm_endpoint }} info"
