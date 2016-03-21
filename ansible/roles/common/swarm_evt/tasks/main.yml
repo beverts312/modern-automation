@@ -3,6 +3,6 @@
 - name: Wait for nodes to be ready
   shell: "docker -H {{ swarm_endpoint }} info"
   register: result
-  until: result.stdout.find("Nodes: {{ expected_worker_node_count }}") != -1
+  until: "result.stdout.find(\"Nodes: {{ expected_worker_node_count }}\") != -1"
   retries: 100
   delay: 8
