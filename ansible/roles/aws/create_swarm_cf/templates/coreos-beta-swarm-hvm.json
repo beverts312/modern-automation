@@ -312,7 +312,7 @@
     "WebNodeLoadBalancer" : {
       "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
       "Properties" : {
-        "LoadBalancerName" : {"Fn::Join" : ["-", ["node", { "Ref" : "Vpc" } ]]},
+        "LoadBalancerName" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "node-elb" ] ] },
         "CrossZone": true,
         "SecurityGroups" : [ { "Ref" : "WebNodeLoadBalancerSecurityGroup" } ],
         "Subnets" : [{ "Ref" : "PubSubnetAz1" }, { "Ref" : "PubSubnetAz2" }, { "Ref" : "PubSubnetAz3" }],
@@ -335,13 +335,10 @@
     "MasterLoadBalancer" : {
       "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
       "Properties" : {
-        "LoadBalancerName" : {"Fn::Join" : ["-", ["master", { "Ref" : "Vpc" } ]]},
+        "LoadBalancerName" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "master-elb" ] ] },
         "CrossZone": true,
         "SecurityGroups" : [ { "Ref" : "MasterLoadBalancerSecurityGroup" } ],
         "Subnets" : [{ "Ref" : "PubSubnetAz1" }, { "Ref" : "PubSubnetAz2" }, { "Ref" : "PubSubnetAz3" }],
-        "Tags": [
-          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "_master_elb" ] ] } }
-        ],
         "Listeners" :
           [ {
             "LoadBalancerPort" : "2379",
