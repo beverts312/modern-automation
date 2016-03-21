@@ -44,3 +44,12 @@
 
 - name: Stack Output
   debug: msg="{{ stack_creation_response.stack_outputs }}"
+
+- name: Get ELB facts
+  ec2_elb_facts:  
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    names: "{{ cf_stack_name }}_master_elb"
+  register: master_elb
+  
+- debug: msg="{{ master_elb }}"
