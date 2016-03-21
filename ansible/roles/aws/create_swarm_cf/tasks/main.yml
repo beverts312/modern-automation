@@ -54,7 +54,5 @@
   register: master_elb
   
 - set_fact:
-    master_lb: "{{master_elb.elbs[0].dns_name}}:4000"
-    worker_node_count: "{{ (number_of_web_nodes|int) + (number_of_app_nodes|int) }}"
-    
-- debug: msg="{{master_lb}}"
+    swarm_endpoint: "{{master_elb.elbs[0].dns_name}}:4000"
+    expected_worker_node_count: "{{ (number_of_web_nodes|int) + (number_of_app_nodes|int) }}"
