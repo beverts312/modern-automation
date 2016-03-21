@@ -53,4 +53,7 @@
     region: "{{ cf_region }}"    
   register: master_elb
   
-- debug: msg="{{ master_elb }}"
+- set_fact:
+    master_lb: "{{master_elb.elbs[0].dns_name}}:4000"
+    
+- debug: msg="{{master_lb}}"
