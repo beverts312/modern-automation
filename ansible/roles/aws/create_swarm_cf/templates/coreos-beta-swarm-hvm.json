@@ -12,11 +12,11 @@
       },
 
       "RegionMap" : {
-          "us-east-1" : { "AMI" : "ami-e22f1388"},
-          "us-west-2" : { "AMI" : "ami-fbf01d9b" },
-          "us-west-1" : { "AMI" : "ami-e5423285"},
-          "eu-central-1" : { "AMI" : "ami-9db652f2" },
-          "eu-west-1" : { "AMI" : "ami-18bb026b"}
+          "us-east-1" : { "AMI" : "{{ coreos_east_ami }}"},
+          "us-west-2" : { "AMI" : "{{ coreos_west_two_ami }}" },
+          "us-west-1" : { "AMI" : "{{ coreos_us_west_one_ami }}"},
+          "eu-central-1" : { "AMI" : "{{ coreos_eu_central_ami }}" },
+          "eu-west-1" : { "AMI" : "{{ coreos_eu_east_ami }}"}
       }
   },
 
