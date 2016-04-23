@@ -197,6 +197,51 @@
         "RouteTableId" : { "Ref" : "RouteViaIgw" }
       }
     },
+        "LoggingRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version" : "2012-10-17",
+          "Statement": [ {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": [ "ec2.amazonaws.com" ]
+            },
+            "Action": [ "sts:AssumeRole" ]
+          } ]
+        },
+        "Path": "/"
+      }
+    },
+    "LogRolePolicies": {
+      "Type": "AWS::IAM::Policy",
+        "Properties": {
+          "PolicyName": "root",
+          "PolicyDocument": {
+          "Version" : "2012-10-17",
+          "Statement": [   {
+            "Action": [
+              "logs:CreateLogStream",
+              "logs:PutLogEvents"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+          } ]
+        },
+        "Roles": [ {
+          "Ref": "LoggingRole"
+        } ]
+      }
+    },
+    "LoggingProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [ {
+          "Ref": "LoggingRole"
+        } ]
+      }
+    },
     "MasterSecurityGroup" : {
       "Type" : "AWS::EC2::SecurityGroup",
       "Properties" : {
@@ -412,7 +457,7 @@
         "KeyName" : { "Ref" : "KeyName"},
         "SecurityGroups" : [ { "Ref" : "MasterSecurityGroup"}, { "Ref" : "TemporarySecurityGroup"}  ],
         "UserData" :  { "Fn::Base64" : {"Fn::Join" : [ "", ["{{ master_cloud_config }}"] ]} },
-        "IamInstanceProfile": "{{ log_profile }}"
+        "IamInstanceProfile": { "Ref" : "LoggingProfile"}
       }
     },
 
@@ -426,7 +471,7 @@
         "KeyName" : { "Ref" : "KeyName"},
         "SecurityGroups" : [ { "Ref" : "NodeSecurityGroup"},{ "Ref" : "AppNodeSecurityGroup"}, { "Ref" : "TemporarySecurityGroup"} ],
         "UserData" :  { "Fn::Base64" : {"Fn::Join" : [ "", ["{{ node_cloud_config }}"] ]} },
-        "IamInstanceProfile": "{{ log_profile }}"
+        "IamInstanceProfile": { "Ref" : "LoggingProfile"}
       }
     },
 
