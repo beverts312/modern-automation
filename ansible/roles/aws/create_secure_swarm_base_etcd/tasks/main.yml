@@ -2,16 +2,16 @@
 
 - name: Get a new Discovery Service url
   uri:
-    url: "https://discovery.etcd.io/new?size={{ number_of_swarm_masters }}"
+    url: "https://discovery.etcd.io/new?size={{ cf_master_cluster_size }}"
     return_content: yes
   register: discovery_service_url
 
 - set_fact:
-    master_cloud_config: "{{ lookup('template', '../templates/master-config-file.yml.j2') | replace('\r\n', '\\n') }}"
-    app_node_cloud_config: "{{ lookup('template', '../templates/node-config-file.yml.j2') | replace('\r\n', '\\n') }}"
+    master_cloud_config: "{{ lookup('template', 'cloud-init-master.yml') | replace('\r\n', '\\n') }}"
+    node_cloud_config: "{{ lookup('template', 'cloud-init-node.yml') | replace('\r\n', '\\n') }}"
 
-- set_fact:
-    cf_template: "{{ lookup('template', 'coreos-swarm-hvm.json') }}"
+- set_fact:    
+    cf_template: "{{ lookup('template', 'secure-swarm-base.json') }}"
 
 - name: Save the generated CF template file
   local_action: copy content="{{ cf_template }}" dest=./cf_template

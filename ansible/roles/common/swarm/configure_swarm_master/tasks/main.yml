@@ -1,0 +1,21 @@
+---
+
+- set_fact:
+    log_str: ""
+    run_args: "-v /certs:/certs:ro -p 4000:4000 -d --restart=always"
+    swarm_args: "-H :4000 --tlsverify --tlscacert=/certs/ca.pem --tlscert=/certs/swarmCRT.pem --tlskey=/certs/swarmKEY.pem --replication --advertise {{inventory_hostname}}:4000"
+
+- set_fact:
+    discovery_str: "etcd://{% for cur_master in groups.swarm_masters %}{{ cur_master | dns_to_ip }}:2379{% if not loop.last %},{% endif %}{% endfor %}"
+  when: swram_discovery=='etcd'
+
+- set_fact:
+    discovery_str: "consul://{{ groups.swarm_masters[0]|dns_to_ip }}:8500"
+  when: swram_discovery=='consul'
+
+- set_fact:
+    log_str: "--log-driver=awslogs --log-opt awslogs-region={{ cf_region }} --log-opt awslogs-group={{ log_group }} --log-opt awslogs-stream={{inventory_hostname}}-manager"  
+  when: swarm_logs=='aws'
+  
+- name: Start Swarm Master
+  shell: "docker run {{ log_str }} {{ run_args }} swarm manage {{ swarm_str }} {{ discovery_str }}"

@@ -1,0 +1,13 @@
+---
+
+- name: Creates directory
+  file: path=./swarm state=directory
+
+- name: Copy CA Cert into place
+  local_action: copy src=./certs/ca.pem dest=./swarm/ca.pem
+  
+- name: Copy Cert into place
+  local_action: copy src=./certs/{{ master_lb }}CRT.pem dest=./swarm/cert.pem
+  
+- name: Copy Key into place
+  local_action: copy src=./certs/{{ master_lb }}KEY.pem dest=./swarm/key.pem

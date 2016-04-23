@@ -1,0 +1,80 @@
+---
+  
+- name: Get ELB facts
+  ec2_elb_facts:  
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    names: "{{ cf_stack_name }}-master-elb"
+    region: "{{ cf_region }}"    
+  register: master_elb
+
+- name: Get Master Nodes Info
+  ec2_remote_facts:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ cf_region }}"
+    filters:
+      instance-state-name: running
+      "tag:Name": "{{ cf_stack_name }}-MasterNode"
+  register: master_nodes
+
+- name: Get App Nodes Info
+  ec2_remote_facts:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ cf_region }}"  
+    filters:
+      instance-state-name: running
+      "tag:Name": "{{ cf_stack_name }}-AppNode"
+  register: app_nodes
+  
+- name: Get Web Nodes Info
+  ec2_remote_facts:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ cf_region }}"  
+    filters:
+      instance-state-name: running
+      "tag:Name": "{{ cf_stack_name }}-WebNode"
+  register: web_nodes
+
+- set_fact:
+    master_lb: "{{master_elb.elbs[0].dns_name}}"
+    
+- set_fact:    
+    expected_worker_node_count: "{{ (cf_web_node_cluster_size|int) + (cf_app_node_cluster_size|int) }}"
+    master_node_ips: "{% for item in master_nodes.instances %}[ '{{ item.public_dns_name }}' ]{% if not loop.last %} + {% endif %}{% endfor%}"  
+    app_node_ips: "{% for item in app_nodes.instances %}[ '{{ item.public_dns_name }}' ]{% if not loop.last %} + {% endif %}{% endfor%}"  
+    web_node_ips: "{% for item in web_nodes.instances %}[ '{{ item.public_dns_name }}' ]{% if not loop.last %} + {% endif %}{% endfor%}"  
+    swarm_args: "-H {{ master_lb }}:4000 --tlsverify=true --tlscacert=swarm/ca.pem --tlscert=swarm/cert.pem --tlskey=swarm/key.pem"
+        
+- name: Create Masters group
+  add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=swarm_masters
+  with_items: master_node_ips
+  
+- name: Create App group
+  add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=app_nodes
+  with_items: app_node_ips
+
+- name: Create Web group
+  add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=web_nodes
+  with_items: web_node_ips
+
+- name: Add masters to launched group
+  add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=launched
+  with_items: master_node_ips
+  
+- name: Add app nodes to launched group
+  add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=launched
+  with_items: app_node_ips
+
+- name: Add web nodes to launched group
+  add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=launched
+  with_items: web_node_ips
+      
+- name: wait for master instances to listen on port:22
+  wait_for:
+    state: started
+    host: "{{ item }}"
+    port: 22
+  with_items: groups.launched

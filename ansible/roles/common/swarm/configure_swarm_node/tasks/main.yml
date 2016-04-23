@@ -1,0 +1,32 @@
+---
+
+- set_fact:
+    log_str: ""
+
+- set_fact:
+    swarm_str: "etcd://{% for cur_master in groups.swarm_masters %}{{ cur_master | dns_to_ip }}:2379{% if not loop.last %},{% endif %}{% endfor %}"
+    reg_str: "etcd://{% for cur_master in groups.swarm_masters %}{% if loop.last %}{{ cur_master | dns_to_ip }}:2379{% endif %}{% endfor %}"
+  when: swarm_discovery=='etcd'
+
+- set_fact:
+    swarm_str: "consul://{{ groups.swarm_masters[0]|dns_to_ip }}:8500"
+    reg_str: "consul://{{ groups.swarm_masters[0]|dns_to_ip }}:8500"
+  when: swarm_discovery=='consul'
+    
+- name: Get Private IP
+  shell: curl http://169.254.169.254/latest/meta-data/public-hostname
+  register: public_hostname
+
+- set_fact:
+    log_str: "--log-driver=awslogs --log-opt awslogs-region={{ cf_region }} --log-opt awslogs-group={{ log_group }} --log-opt awslogs-stream={{inventory_hostname}}-agent"  
+  when: swarm_logs=='aws'
+  
+- name: Start Swarm Minion
+  shell: "docker run {{ log_str }} --restart=always -d swarm join --addr={{public_hostname.stdout}}:2375 {{ swarm_str }}"
+
+- set_fact:
+    log_str: "--log-driver=awslogs --log-opt awslogs-region={{ cf_region }} --log-opt awslogs-group={{ log_group }} --log-opt awslogs-stream={{inventory_hostname}}-registrator"  
+  when: swarm_logs=='aws'
+  
+- name: Start Registrator
+  shell: "docker run {{ log_str }} --restart=always -d -v /var/run/docker.sock:/tmp/docker.sock -h {{ public_hostname.stdout }} beverts312/registrator {{ reg_str }}"

@@ -1,0 +1,19 @@
+---
+
+- name: Make Certs Dir
+  file: path=/certs state=directory mode=0755
+
+- name: Copy CA
+  copy:
+    src: ./certs/ca.pem
+    dest: /certs/ca.pem
+
+- name: Copy Private Key
+  copy:
+    src: ./certs/{{ inventory_hostname }}KEY.pem
+    dest: /certs/key.pem
+
+- name: Copy Cert
+  copy:
+    src: ./certs/{{ inventory_hostname }}CRT.pem
+    dest: /certs/cert.pem
