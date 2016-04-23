@@ -1,10 +1,25 @@
 ---
-
+# Node Count
 number_of_swarm_masters: 3
-number_of_app_nodes: 3
-number_of_web_nodes: 3
+number_of_nodes: 3
 
+# Node Size
+cf_swarm_master_instance_type: t2.nano
+cf_swarm_node_instance_type: t2.nano
+
+# Security
+cf_allowed_swarm_master_control_from: 0.0.0.0/0
+cf_allowed_etcd_discovery_from: 0.0.0.0/0
+advertised_ip_address: private
+
+# Cert Info (secure cluster only)
 certificate_country: US
 certificate_state: TX
-certificate_locality: Westlake 
-certificate_ou: PI
+certificate_locality: DFW 
+certificate_ou: Boss
+
+# Logs
+# Coming Soon
+
+# Service Discovery
+# Coming Soon

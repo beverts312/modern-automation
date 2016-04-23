@@ -1,6 +1,0 @@
----
-
-- hosts: localhost
-  connection: local
-  roles:
-  - aws/destroy_swarm_cf

@@ -4,4 +4,4 @@
   connection: local
   roles:
   - aws/create_swarm_cf
-  - common/swarm_evt
+  - common/swarm/evt

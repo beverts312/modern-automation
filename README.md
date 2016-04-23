@@ -1,5 +1,8 @@
-# Automation  
-This repo is used for storing various code/documentation related to automated deployments / processes in the cloud.  
+## Ansible Automation  
 
-## Ansible  
-Ansible is a simple ssh based automation tool written in python. The files in the ansible directory in this repo are a collection of playbooks and the things they need to run.
+| Playbook | Docs | Description |
+|----------|------|-------------|
+| [aws_create_couchebase_cluster.yml](aws_create_couchebase_cluster.yml) | [link](./docs/aws_couchbase.md) | Creates a couchbase cluster in AWS |
+| [aws_create_etcd_cluster.yml](aws_create_etcd_cluster.yml) | [link](./docs/aws_etcd.md) | Creates an etcd cluster in AWS |
+| [aws_create_swarm_cluser.yml](aws_create_swarm_cluser.yml) | [link](./docs/aws_dev_swarm.md) | Creates Swarm cluster in AWS |
+| [aws_create_secure_swarm_cluster.yml](.ansible/aws_create_secure_swarm_cluster.yml) | [link](./docs/aws_swarm.md) | Creates Secure Swarm Cluster in AWS |

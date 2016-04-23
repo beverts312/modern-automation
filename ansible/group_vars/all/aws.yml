@@ -2,27 +2,3 @@
 #CloudFormation - All
 cf_region: us-east-1
 cf_vpc_azs: "{{ cf_region }}b,{{ cf_region }}c,{{ cf_region }}d"
-
-#CloudFormation - Swarm
-cf_master_instance_type: t2.nano
-cf_web_instance_type: t2.nano
-cf_app_instance_type: t2.nano
-cf_allowed_swarm_master_control_from: 0.0.0.0/0
-cf_allowed_etcd_discovery_from: 0.0.0.0/0
-advertised_ip_address: private
-
-#CloudFormation - Couchbase
-master_instance_type: t2.micro
-number_of_master_nodes: 1
-data_instance_type: t2.micro
-number__of_data_nodes: 1
-admin_user: Administrator
-admin_password: password
-cluster_ram_quota: 512
-
-#CoreOS AMIs
-coreos_east_ami: ami-a48380ce
-coreos_west_two_ami: ami-fd5bb29d
-coreos_us_west_one_ami: ami-e25c2e82
-coreos_eu_central_ami: ami-c516f1aa
-coreos_eu_east_ami: ami-7b971208

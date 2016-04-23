@@ -33,7 +33,7 @@
       "Default" : "t2.nano"
     },
 
-    "WebInstanceType" : {
+    "NodeInstanceType" : {
       "Type" : "String",
       "Description" : "EC2 HVM instance type (t2.micro, m3.medium, etc).",
       "AllowedValues" : [
@@ -44,27 +44,7 @@
       "ConstraintDescription" : "Must be a valid EC2 HVM instance type.",
       "Default" : "t2.nano"
     },
-
-    "AppInstanceType" : {
-      "Type" : "String",
-      "Description" : "EC2 HVM instance type (t2.micro, m3.medium, etc).",
-      "AllowedValues" : [
-        "t2.nano","t2.micro","t2.small","t2.medium","t2.large","m4.large","m4.xlarge","m4.2xlarge","m4.4xlarge","m4.10xlarge","m3.medium",
-        "m3.large","m3.xlarge","m3.2xlarge","c4.large","c4.xlarge","c4.2xlarge","c4.4xlarge","c4.8xlarge","c3.large","c3.xlarge",
-        "c3.2xlarge","c3.4xlarge","c3.8xlarge","r3.large","r3.xlarge","r3.2xlarge","r3.4xlarge","r3.8xlarge","i2.xlarge",
-        "i2.2xlarge","i2.4xlarge","i2.8xlarge" ],
-      "ConstraintDescription" : "Must be a valid EC2 HVM instance type.",
-      "Default" : "t2.nano"
-    },
-    "AppNodeClusterSize" : {
-      "Type" : "Number",
-      "Default" : "3",
-      "MinValue" : "1",
-      "MaxValue" : "12",
-      "Description" : "Number of Swarm Node instances. Please set it a multiple of AZ count."
-    },
-
-    "WebNodeClusterSize" : {
+    "NodeClusterSize" : {
       "Type" : "Number",
       "Default" : "3",
       "MinValue" : "1",
@@ -248,38 +228,7 @@
         ]
       }
     },
-
-    "AppNodeSecurityGroup" : {
-      "Type" : "AWS::EC2::SecurityGroup",
-      "DependsOn" : "NodeSecurityGroup",
-      "Properties" : {
-        "GroupDescription" : "AppNode SecurityGroup",
-        "VpcId" : { "Ref" : "Vpc" },
-        "SecurityGroupIngress" : [
-
-        ],
-        "Tags": [
-          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "AppNode-SG" ] ] } }
-        ]
-      }
-    },
-
-    "WebNodeSecurityGroup" : {
-      "Type" : "AWS::EC2::SecurityGroup",
-      "DependsOn" : "NodeSecurityGroup",
-      "Properties" : {
-        "GroupDescription" : "WebNode SecurityGroup",
-        "VpcId" : { "Ref" : "Vpc" },
-        "SecurityGroupIngress" : [
-          { "IpProtocol" : "tcp", "FromPort" : "1025", "ToPort" : "1035", "CidrIp" : "0.0.0.0/0" }
-        ],
-        "Tags": [
-          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "WebNode-SG" ] ] } }
-        ]
-      }
-    },
-
-
+    
     "MasterLoadBalancerSecurityGroup" : {
       "Type" : "AWS::EC2::SecurityGroup",
       "Properties" : {
@@ -295,40 +244,6 @@
           { "IpProtocol" : "tcp", "FromPort" : "2379", "ToPort" : "2379", "CidrIp" : "0.0.0.0/0" },
           { "IpProtocol" : "tcp", "FromPort" : "2375", "ToPort" : "2375", "CidrIp" : { "Fn::GetAtt" : [ "Vpc", "CidrBlock" ] } }
         ]
-      }
-    },
-
-    "WebNodeLoadBalancerSecurityGroup" : {
-      "Type" : "AWS::EC2::SecurityGroup",
-      "Properties" : {
-        "GroupDescription" : "Enable HTTP access on ports 1025-1035 ",
-        "VpcId" : { "Ref" : "Vpc" },
-        "SecurityGroupIngress" : [
-          { "IpProtocol" : "tcp", "FromPort" : "1025", "ToPort" : "1035", "CidrIp" : "0.0.0.0/0" }
-        ]
-      }
-    },
-
-    "WebNodeLoadBalancer" : {
-      "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
-      "Properties" : {
-        "LoadBalancerName" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "node-elb" ] ] },
-        "CrossZone": true,
-        "SecurityGroups" : [ { "Ref" : "WebNodeLoadBalancerSecurityGroup" } ],
-        "Subnets" : [{ "Ref" : "PubSubnetAz1" }, { "Ref" : "PubSubnetAz2" }, { "Ref" : "PubSubnetAz3" }],
-        "Listeners" :
-          [ {
-            "LoadBalancerPort" : "1025",
-            "InstancePort" : "1025",
-            "Protocol" : "HTTP"
-          }],
-        "HealthCheck" : {
-          "Target" : { "Fn::Join" : [ "", ["HTTP:1025", "/"]]},
-          "HealthyThreshold" : "5",
-          "UnhealthyThreshold" : "3",
-          "Interval" : "30",
-          "Timeout" : "5"
-        }
       }
     },
 
@@ -417,20 +332,6 @@
       }
     },
 
-    "AppNodeIngress" : {
-      "DependsOn" : "AppNodeSecurityGroup",
-      "Type" : "AWS::EC2::SecurityGroupIngress",
-      "Properties" : {
-        "GroupId" : {
-          "Fn::GetAtt" : [ "AppNodeSecurityGroup", "GroupId" ]
-        },
-        "IpProtocol" : "tcp",
-        "FromPort" : "32750",
-        "ToPort" : "40000",
-        "SourceSecurityGroupId" : { "Fn::GetAtt" : [ "WebNodeSecurityGroup", "GroupId" ] }
-      }
-    },
-
     "MasterIngress4001" : {
       "DependsOn" : [ "MasterSecurityGroup", "NodeSecurityGroup" ],
       "Type" : "AWS::EC2::SecurityGroupIngress",
@@ -473,7 +374,6 @@
       }
     },
 
-
     "MasterIngress2380" : {
       "DependsOn" : [ "MasterSecurityGroup", "NodeSecurityGroup" ],
       "Type" : "AWS::EC2::SecurityGroupIngress",
@@ -500,32 +400,18 @@
       }
     },
 
-    "AppNodeLaunchConfiguration" : {
+    "NodeLaunchConfiguration" : {
       "DependsOn" : [ "InternetGateway", "MasterAutoScalingGroup" ],
       "Type" : "AWS::AutoScaling::LaunchConfiguration",
       "Properties" : {
         "ImageId" : { "Fn::FindInMap" : [ "RegionMap", { "Ref" : "AWS::Region" }, "AMI" ] },
-        "InstanceType" : { "Ref" : "AppInstanceType"},
+        "InstanceType" : { "Ref" : "NodeInstanceType"},
         "AssociatePublicIpAddress" : true,
         "KeyName" : { "Ref" : "KeyName"},
-        "SecurityGroups" : [ { "Ref" : "NodeSecurityGroup"},{ "Ref" : "AppNodeSecurityGroup"} ],
-        "UserData" :  { "Fn::Base64" : {"Fn::Join" : [ "", ["{{ app_node_cloud_config }}"] ]} }
+        "SecurityGroups" : [ { "Ref" : "NodeSecurityGroup"} ],
+        "UserData" :  { "Fn::Base64" : {"Fn::Join" : [ "", ["{{ node_cloud_config }}"] ]} }
       }
     },
-
-    "WebNodeLaunchConfiguration" : {
-      "DependsOn" : [ "InternetGateway", "MasterAutoScalingGroup" ],
-      "Type" : "AWS::AutoScaling::LaunchConfiguration",
-      "Properties" : {
-        "ImageId" : { "Fn::FindInMap" : [ "RegionMap", { "Ref" : "AWS::Region" }, "AMI" ] },
-        "InstanceType" : { "Ref" : "WebInstanceType"},
-        "AssociatePublicIpAddress" : true,
-        "KeyName" : { "Ref" : "KeyName"},
-        "SecurityGroups" : [ { "Ref" : "NodeSecurityGroup"},{ "Ref" : "WebNodeSecurityGroup"} ],
-        "UserData" :  { "Fn::Base64" : {"Fn::Join" : [ "", ["{{ web_node_cloud_config }}"] ]} }
-      }
-    },
-
 
     "MasterAutoScalingGroup" : {
       "Type" : "AWS::AutoScaling::AutoScalingGroup",
@@ -544,39 +430,21 @@
       }
     },
 
-    "WebNodeAutoScalingGroup" : {
+    "NodeAutoScalingGroup" : {
       "Type" : "AWS::AutoScaling::AutoScalingGroup",
       "Properties" : {
         "AvailabilityZones" :
           [ { "Fn::Select" : [ "0", { "Ref" : "VpcAvailabilityZones" } ] }, { "Fn::Select" : [ "1", { "Ref" : "VpcAvailabilityZones" } ] }, { "Fn::Select" : [ "2", { "Ref" : "VpcAvailabilityZones" } ] } ],
         "VPCZoneIdentifier" : [ { "Fn::Join" : [",", [ { "Ref" : "PubSubnetAz1" }, { "Ref" : "PubSubnetAz2" }, { "Ref" : "PubSubnetAz3" } ] ] } ],
-        "LaunchConfigurationName" : { "Ref" : "WebNodeLaunchConfiguration" },
-        "LoadBalancerNames" : [ { "Ref" : "WebNodeLoadBalancer" } ],
+        "LaunchConfigurationName" : { "Ref" : "NodeLaunchConfiguration" },
         "MinSize" : "1",
         "MaxSize" : "12",
-        "DesiredCapacity" : { "Ref" : "WebNodeClusterSize"},
+        "DesiredCapacity" : { "Ref" : "NodeClusterSize"},
         "Tags": [
           { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "WebNode" ] ] }, "PropagateAtLaunch" : "true" }
         ]
       }
     },
-
-    "AppNodeAutoScalingGroup" : {
-      "Type" : "AWS::AutoScaling::AutoScalingGroup",
-      "Properties" : {
-        "AvailabilityZones" :
-          [ { "Fn::Select" : [ "0", { "Ref" : "VpcAvailabilityZones" } ] }, { "Fn::Select" : [ "1", { "Ref" : "VpcAvailabilityZones" } ] }, { "Fn::Select" : [ "2", { "Ref" : "VpcAvailabilityZones" } ] } ],
-        "VPCZoneIdentifier" : [ { "Fn::Join" : [",", [ { "Ref" : "PubSubnetAz1" }, { "Ref" : "PubSubnetAz2" }, { "Ref" : "PubSubnetAz3" } ] ] } ],
-        "LaunchConfigurationName" : { "Ref" : "AppNodeLaunchConfiguration" },
-        "MinSize" : "1",
-        "MaxSize" : "12",
-        "DesiredCapacity" : { "Ref" : "AppNodeClusterSize"},
-        "Tags": [
-          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "AppNode" ] ] }, "PropagateAtLaunch" : "true" }
-        ]
-      }
-    }
-  },
 
   "Outputs" : {
 
@@ -588,10 +456,9 @@
       "Description" : "ELB of Masters",
       "Value" : { "Fn::GetAtt" : [ "MasterLoadBalancer", "DNSName" ] }
     },
-    "WebNodeLoadBalancer" : {
-      "Description" : "ELB of Web Nodes",
-      "Value" : { "Fn::GetAtt" : [ "WebNodeLoadBalancer", "DNSName" ] }
+    "ETCD API" : {
+      "Description" : "etcd API Base",
+      "Value" : { "Fn::Join" : [ "", [ "http://", { "Fn::GetAtt" : [ "MasterLoadBalancer", "DNSName" ] }, ":2379/v2" ] ] }
     }
   }
-
 }

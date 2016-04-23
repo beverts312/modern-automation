@@ -6,7 +6,7 @@
             - name: 10-swarm.conf
               content: |
                 [Service]
-                Environment=\"DOCKER_OPTS=-H unix:///var/run/docker.sock --label type=web\"
+                Environment=\"DOCKER_OPTS=-H unix:///var/run/docker.sock \"
     - name: docker-swarm.service
       command: start
       content: |
