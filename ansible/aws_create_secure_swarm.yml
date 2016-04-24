@@ -20,6 +20,7 @@
   sudo: True
   roles:
   - common/swarm/certs/place_certs
+  - common/start_consul
   - coreos/secure_docker_engine
   
 - hosts: swarm_masters
