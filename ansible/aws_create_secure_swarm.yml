@@ -6,8 +6,8 @@
   - { role: aws/create_secure_swarm_base_etcd, when: swarm_discovery == 'etcd' }
   - { role: aws/create_secure_swarm_base_consul, when: swarm_discovery == 'consul' }
   - aws/set_swarm_facts
-  - common/swarm/create_certs
-  - common/swarm/gather_local_certs
+  - common/swarm/certs/create_certs
+  - common/swarm/certs/gather_local_certs
 
 - hosts: launched
   remote_user: core
@@ -19,20 +19,21 @@
   remote_user: core
   sudo: True
   roles:
-  - common/certs/place_certs
+  - common/swarm/certs/place_certs
+  - coreos/secure_docker_engine
   
 - hosts: swarm_masters
   remote_user: core
   sudo: True
   roles:
   - common/swarm/certs/place_manager_certs
-  - swarm/coreos/configure_swarm_master
+  - swarm/configure_swarm_master
 
 - hosts: swarm_nodes
   remote_user: core
   sudo: True
   roles:
-  - common/swarm/coreos/configure_swarm_node  
+  - common/swarm/configure_swarm_node  
 
 - hosts: localhost
   connection: local
