@@ -3,7 +3,7 @@
 - hosts: localhost
   connection: local
   roles:
-  - { role: aws/create_sercure_swarm_base_etcd, when: swarm_discovery == 'etcd' }
+  - { role: aws/create_secure_swarm_base_etcd, when: swarm_discovery == 'etcd' }
   - { role: aws/create_secure_swarm_base_consul, when: swarm_discovery == 'consul' }
   - aws/set_swarm_facts
   - common/swarm/create_certs
