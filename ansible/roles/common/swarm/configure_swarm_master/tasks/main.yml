@@ -7,15 +7,15 @@
 
 - set_fact:
     discovery_str: "etcd://{% for cur_master in groups.swarm_masters %}{{ cur_master | dns_to_ip }}:2379{% if not loop.last %},{% endif %}{% endfor %}"
-  when: swram_discovery=='etcd'
+  when: swarm_discovery == 'etcd'
 
 - set_fact:
     discovery_str: "consul://{{ groups.swarm_masters[0]|dns_to_ip }}:8500"
-  when: swram_discovery=='consul'
+  when: swarm_discovery == 'consul'
 
 - set_fact:
     log_str: "--log-driver=awslogs --log-opt awslogs-region={{ cf_region }} --log-opt awslogs-group={{ log_group }} --log-opt awslogs-stream={{inventory_hostname}}-manager"  
-  when: swarm_logs=='aws'
+  when: swarm_logs == 'aws'
   
 - name: Start Swarm Master
   shell: "docker run {{ log_str }} {{ run_args }} swarm manage {{ swarm_str }} {{ discovery_str }}"
