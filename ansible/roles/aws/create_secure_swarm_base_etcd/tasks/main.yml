@@ -29,9 +29,9 @@
       AllowEtcdDiscoveryFrom: "{{ cf_allowed_etcd_discovery_from }}"
       DiscoveryURL: "{{ discovery_service_url.content }}"
       MasterInstanceType: "{{ cf_master_instance_type }}"
-      MasterClusterSize: "{{ cf_master_cluster_size }}"
+      MasterClusterSize: "{{ number_of_swarm_masters }}"
       NodeInstanceType: "{{ cf_node_instance_type }}"
-      NodeClusterSize: "{{ cf_node_cluster_size }}"
+      NodeClusterSize: "{{ number_of_swarm_nodes }}"
       KeyName: "{{ aws_keypair }}"
       VpcAvailabilityZones: "{{ cf_vpc_azs }}"
     tags:

@@ -1,7 +1,7 @@
 ---
 # Node Count
 number_of_swarm_masters: 3
-number_of_nodes: 3
+number_of_swarm_nodes: 3
 
 # Node Size
 cf_swarm_master_instance_type: t2.nano
