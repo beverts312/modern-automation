@@ -271,6 +271,8 @@
         "GroupDescription" : "Node SecurityGroup",
         "VpcId" : { "Ref" : "Vpc" },
         "SecurityGroupIngress" : [
+          { "IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : "80", "CidrIp" : "0.0.0.0/0" },          
+          { "IpProtocol" : "tcp", "FromPort" : "32500", "ToPort" : "40000", "CidrIp" : "0.0.0.0/0" }          
         ],
         "Tags": [
           { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "Node-SG" ] ] } }
