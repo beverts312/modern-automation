@@ -330,7 +330,7 @@
           }
         ],
         "HealthCheck" : {
-          "Target" : { "Fn::Join" : [ "", ["HTTP:8500", "/"]]},
+          "Target" : "TCP:8500",
           "HealthyThreshold" : "5",
           "UnhealthyThreshold" : "3",
           "Interval" : "30",
