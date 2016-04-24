@@ -29,4 +29,4 @@
   when: swarm_logs=='aws'
   
 - name: Start Registrator
-  shell: "docker run {{ log_str }} --restart=always -d -v /var/run/docker.sock:/tmp/docker.sock -h {{ public_hostname.stdout }} beverts312/registrator {{ reg_str }}"
+  shell: "docker run {{ log_str }} --restart=always -d -v /var/run/docker.sock:/tmp/docker.sock --net=host beverts312/registrator -ip {{inventory_hostname|dns_to_ip}} {{ reg_str }}"
