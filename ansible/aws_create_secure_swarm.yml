@@ -27,7 +27,7 @@
   sudo: True
   roles:
   - common/swarm/certs/place_manager_certs
-  - swarm/configure_swarm_master
+  - common/swarm/configure_swarm_master
 
 - hosts: swarm_nodes
   remote_user: core
