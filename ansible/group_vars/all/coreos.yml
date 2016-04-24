@@ -1,7 +1,7 @@
 ---
 #CoreOS AMIs
-coreos_east_ami: ami-a48380ce
-coreos_west_two_ami: ami-fd5bb29d
-coreos_us_west_one_ami: ami-e25c2e82
-coreos_eu_central_ami: ami-c516f1aa
-coreos_eu_east_ami: ami-7b971208
+coreos_east_ami: ami-33190f59
+coreos_west_two_ami: ami-848074e4
+coreos_us_west_one_ami: ami-134a3673
+coreos_eu_central_ami: ami-9b6c8df4
+coreos_eu_west_ami: ami-f4199987

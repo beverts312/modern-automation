@@ -15,6 +15,7 @@ advertised_ip_address: private
 ### Secure Cluster Only
 # Logs (aws uses cloudwatch, any other string will use the default driver)
 swarm_logs: aws
+log_group: swarm
 
 # Service Discovery (etcd or consul)
 swarm_discovery: consul
