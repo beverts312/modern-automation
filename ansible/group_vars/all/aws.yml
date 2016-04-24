@@ -1,4 +1,4 @@
 ---
 #CloudFormation - All
 cf_region: us-east-1
-cf_vpc_azs: "{{ cf_region }}b,{{ cf_region }}c,{{ cf_region }}d"
+cf_vpc_azs: "{{ cf_region }}c,{{ cf_region }}d,{{ cf_region }}e"
