@@ -1,25 +1,14 @@
 ---
 
-- set_fact:
+- name: Prepare Args 
+  set_fact:
     swarm_str: "consul://{{ groups.swarm_masters[0]|dns_to_ip }}:8500"
     log_str: ""
     consul_args_part_one: "-advertise {{ inventory_hostname|dns_to_ip }} {% if inventory_hostname==groups.swarm_masters[0] %} -bootstrap-expect {{number_of_swarm_masters|int}}{% endif %}"
     consul_args_part_two: "{% for cur_master in groups.swarm_masters %}{% if inventory_hostname!=cur_master %} -retry-join {{ cur_master|dns_to_ip}} {% endif %}{% endfor %}" 
+    consul_ports: "-p 8300:8300 -p 8301:8301 -p 8301:8301/udp -p 8302:8302 -p 8302:8302/udp -p 8400:8400 -p 8500:8500 -p 53:53/udp"
 
 - name: Start Consul container
-  docker:
-    image: beverts312/consul
-    state: reloaded
-    pull: always
-    ports:
-    - "8300:8300"
-    - "8301:8301"
-    - "8301:8301/udp"
-    - "8302:8302"
-    - "8302:8302/udp"
-    - "8400:8400"
-    - "8500:8500" 
-    - "53:53/udp"
-    command: "{{ consul_args_part_one }} {{ consul_args_part_two }}"
+  shell: "docker run -d -v /data:/data -{{ consul_ports }} --restart=always beverts312/consul {{ consul_args_part_one }} {{ consul_args_part_two }}"
 
 - pause: seconds=30
