@@ -26,7 +26,7 @@
   remote_user: core
   sudo: True
   roles:
-  - { role: common/start_consul, when: swarm_discovery == 'consul' }
+  - { role: common/swarm/start_consul, when: swarm_discovery == 'consul' }
   - common/swarm/certs/place_manager_certs
   - common/swarm/configure_swarm_master
 

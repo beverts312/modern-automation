@@ -2,7 +2,6 @@
 
 - name: Prepare Args 
   set_fact:
-    swarm_str: "consul://{{ groups.swarm_masters[0]|dns_to_ip }}:8500"
     log_str: ""
     consul_args_part_one: "-advertise {{ inventory_hostname|dns_to_ip }} {% if inventory_hostname==groups.swarm_masters[0] %} -bootstrap-expect {{number_of_swarm_masters|int}}{% endif %}"
     consul_args_part_two: "{% for cur_master in groups.swarm_masters %}{% if inventory_hostname!=cur_master %} -retry-join {{ cur_master|dns_to_ip}} {% endif %}{% endfor %}" 
