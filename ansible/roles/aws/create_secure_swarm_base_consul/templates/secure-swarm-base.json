@@ -237,7 +237,20 @@
         "VpcId" : { "Ref" : "Vpc" },
         "SecurityGroupIngress" : [
           { "IpProtocol" : "tcp", "FromPort" : "2375", "ToPort" : "2375", "CidrIp" : { "Fn::GetAtt" : [ "Vpc", "CidrBlock" ] } },
-          { "IpProtocol" : "tcp", "FromPort" : "4000", "ToPort" : "4000", "CidrIp" : { "Ref" : "AllowSwarmMasterControlFrom" } },
+          { "IpProtocol" : "tcp", "FromPort" : "4000", "ToPort" : "4000", "CidrIp" : { "Ref" : "AllowSwarmMasterControlFrom" } }
+        ],
+        "Tags": [
+          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "Master-SG" ] ] } }
+        ]
+      }
+    },
+    "ConsulSecurityGroup" : {
+      "DependsOn": "MasterSecurityGroup",
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Consul SecurityGroup",
+        "VpcId" : { "Ref" : "Vpc" },
+        "SecurityGroupIngress" : [
           { "IpProtocol" : "tcp", "FromPort" : "8500", "ToPort" : "8500", "CidrIp" : "0.0.0.0/0" },
           { "IpProtocol" : "tcp", "FromPort" : "8300", "ToPort" : "8300", "SourceSecurityGroupId" : { "Ref" : "MasterSecurityGroup" } },
           { "IpProtocol" : "tcp", "FromPort" : "8301", "ToPort" : "8301", "SourceSecurityGroupId" : { "Ref" : "MasterSecurityGroup" } },
@@ -252,7 +265,6 @@
         ]
       }
     },
-
     "NodeSecurityGroup" : {
       "Type" : "AWS::EC2::SecurityGroup",
       "Properties" : {
