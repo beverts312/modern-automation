@@ -53,7 +53,7 @@
   add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=launched
   with_items: node_ips
 
-- name: wait for master instances to listen on port:22
+- name: wait for instances to listen on port:22
   wait_for:
     state: started
     host: "{{ item }}"
