@@ -1,5 +1,5 @@
 ## Ansible Automation  
-You will need to look at this for any of the playbooked: [Configuring Credentials](./docs/credentials.md)  
+You will need to look at this for any of the playbooks: [Configuring Credentials](./docs/credentials.md)  
 
 | Playbook | Docs | Description |
 |----------|------|-------------|
