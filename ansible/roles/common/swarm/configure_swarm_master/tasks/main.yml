@@ -18,4 +18,4 @@
   when: swarm_logs == 'aws'
   
 - name: Start Swarm Master
-  shell: "docker run {{ log_str }} {{ run_args }} swarm manage {{ swarm_str }} {{ discovery_str }}"
+  shell: "docker run {{ log_str }} {{ run_args }} swarm manage {{ swarm_args }} {{ discovery_str }}"
