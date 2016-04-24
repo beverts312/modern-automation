@@ -358,7 +358,7 @@
         "InstanceType" : { "Ref" : "MasterInstanceType"},
         "AssociatePublicIpAddress" : true,
         "KeyName" : { "Ref" : "KeyName"},
-        "SecurityGroups" : [ { "Ref" : "MasterSecurityGroup"}, { "Ref" : "TemporarySecurityGroup"}  ],
+        "SecurityGroups" : [ { "Ref" : "MasterSecurityGroup"}, { "Ref" : "TemporarySecurityGroup"}, { "Ref": "ConsulSecurityGroup" }  ],
         "IamInstanceProfile": { "Ref" : "LoggingProfile"}
       }
     },
