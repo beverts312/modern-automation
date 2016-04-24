@@ -5,4 +5,4 @@
   roles:
   - aws/create_swarm_cf
   - aws/set_swarm_facts
-  - common/swarm_evt
+  - common/swarm/evt
