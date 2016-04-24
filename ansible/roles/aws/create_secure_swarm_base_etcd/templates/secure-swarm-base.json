@@ -469,7 +469,7 @@
         "InstanceType" : { "Ref" : "NodeInstanceType"},
         "AssociatePublicIpAddress" : true,
         "KeyName" : { "Ref" : "KeyName"},
-        "SecurityGroups" : [ { "Ref" : "NodeSecurityGroup"},{ "Ref" : "AppNodeSecurityGroup"}, { "Ref" : "TemporarySecurityGroup"} ],
+        "SecurityGroups" : [ { "Ref" : "NodeSecurityGroup"}, { "Ref" : "TemporarySecurityGroup"} ],
         "UserData" :  { "Fn::Base64" : {"Fn::Join" : [ "", ["{{ node_cloud_config }}"] ]} },
         "IamInstanceProfile": { "Ref" : "LoggingProfile"}
       }

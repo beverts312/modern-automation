@@ -2,7 +2,7 @@
 
 - name: Get a new Discovery Service url
   uri:
-    url: "https://discovery.etcd.io/new?size={{ cf_master_cluster_size }}"
+    url: "https://discovery.etcd.io/new?size={{ number_of_swarm_masters }}"
     return_content: yes
   register: discovery_service_url
 
