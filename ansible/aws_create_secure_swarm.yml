@@ -20,13 +20,13 @@
   sudo: True
   roles:
   - common/swarm/certs/place_certs
-  - common/start_consul
   - coreos/secure_docker_engine
   
 - hosts: swarm_masters
   remote_user: core
   sudo: True
   roles:
+  - { role: common/start_consul, when: swarm_discovery == 'consul' }
   - common/swarm/certs/place_manager_certs
   - common/swarm/configure_swarm_master
 
