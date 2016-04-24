@@ -38,6 +38,12 @@
 
 - hosts: localhost
   connection: local
+  tasks:
+  - set_fact:
+      swarm_args: "-H {{ master_lb }}:4000 --tlsverify=true --tlscacert=swarm/ca.pem --tlscert=swarm/cert.pem --tlskey=swarm/key.pem"
+      
+- hosts: localhost
+  connection: local
   roles:
   - common/swarm/evt
   
