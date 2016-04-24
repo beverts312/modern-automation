@@ -6,6 +6,8 @@ Provisions ELB in front of the masters.
 ## Requirements  
 boto - `pip install boto`  
 Docker  
+CoreOS Bootstrap from defunctzombie - `ansible-galaxy install defunctzombie.coreos-bootstrap -p ./roles` from the `ansible` directory
+
 
 ## Configuration  
 | Variable | File | Description |
