@@ -499,7 +499,6 @@
           [ { "Fn::Select" : [ "0", { "Ref" : "VpcAvailabilityZones" } ] }, { "Fn::Select" : [ "1", { "Ref" : "VpcAvailabilityZones" } ] }, { "Fn::Select" : [ "2", { "Ref" : "VpcAvailabilityZones" } ] } ],
         "VPCZoneIdentifier" : [ { "Fn::Join" : [",", [ { "Ref" : "PubSubnetAz1" }, { "Ref" : "PubSubnetAz2" }, { "Ref" : "PubSubnetAz3" } ] ] } ],
         "LaunchConfigurationName" : { "Ref" : "NodeLaunchConfiguration" },
-        "LoadBalancerNames" : [ { "Ref" : "NodeLoadBalancer" } ],
         "MinSize" : "1",
         "MaxSize" : "12",
         "DesiredCapacity" : { "Ref" : "NodeClusterSize"},
