@@ -44,21 +44,16 @@
 - set_fact:    
     expected_worker_node_count: "{{ (cf_web_node_cluster_size|int) + (cf_app_node_cluster_size|int) }}"
     master_node_ips: "{% for item in master_nodes.instances %}[ '{{ item.public_dns_name }}' ]{% if not loop.last %} + {% endif %}{% endfor%}"  
-    app_node_ips: "{% for item in app_nodes.instances %}[ '{{ item.public_dns_name }}' ]{% if not loop.last %} + {% endif %}{% endfor%}"  
-    web_node_ips: "{% for item in web_nodes.instances %}[ '{{ item.public_dns_name }}' ]{% if not loop.last %} + {% endif %}{% endfor%}"  
+    node_ips: "{% for item in web_nodes.instances %}[ '{{ item.public_dns_name }}' ]{% if not loop.last %} + {% endif %}{% endfor%}"  
     swarm_args: "-H {{ master_lb }}:4000 --tlsverify=true --tlscacert=swarm/ca.pem --tlscert=swarm/cert.pem --tlskey=swarm/key.pem"
         
 - name: Create Masters group
   add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=swarm_masters
   with_items: master_node_ips
   
-- name: Create App group
-  add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=app_nodes
-  with_items: app_node_ips
-
-- name: Create Web group
-  add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=web_nodes
-  with_items: web_node_ips
+- name: Create Node group
+  add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=swarm_nodes
+  with_items: node_ips
 
 - name: Add masters to launched group
   add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=launched
@@ -66,12 +61,8 @@
   
 - name: Add app nodes to launched group
   add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=launched
-  with_items: app_node_ips
+  with_items: node_ips
 
-- name: Add web nodes to launched group
-  add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=launched
-  with_items: web_node_ips
-      
 - name: wait for master instances to listen on port:22
   wait_for:
     state: started
