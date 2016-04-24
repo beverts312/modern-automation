@@ -503,7 +503,7 @@
         "MaxSize" : "12",
         "DesiredCapacity" : { "Ref" : "NodeClusterSize"},
         "Tags": [
-          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "WebNode" ] ] }, "PropagateAtLaunch" : "true" }
+          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "SwarmNode" ] ] }, "PropagateAtLaunch" : "true" }
         ]
       }
     }
