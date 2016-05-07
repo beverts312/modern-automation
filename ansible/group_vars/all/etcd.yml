@@ -1,0 +1,4 @@
+---
+
+etcd_node_count: 3
+etcd_node_size: t2.micro
