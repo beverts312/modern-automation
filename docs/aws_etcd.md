@@ -11,8 +11,8 @@ boto - `pip install boto`
 | cf_region | [aws.yml](../ansible/group_vars/all/aws.yml)|Region to put cluster in|
 | cf_vpc_azs | [aws.yml](../ansible/group_vars/all/aws.yml)|Subnets to distribute nodes in (select 3)|
 |Region Specific|[coreos.yml](../ansible/group_vars/all/coreos.yml)|CoreOS AMI to use|
-|etcd_node_count | [swarm.yml](../ansible/group_vars/all/swarm.yml)|Specify number of nodes (min 3 reccomended)|
-|etcd_node_size | [swarm.yml](../ansible/group_vars/all/swarm.yml)|Specify Size of Nodes|
+|etcd_node_count | [etcd.yml](../ansible/group_vars/all/etcd.yml)|Specify number of nodes (min 3 reccomended)|
+|etcd_node_size | [etcd.yml](../ansible/group_vars/all/etcd.yml)|Specify Size of Nodes|
 
 [Configuring Credentials](./credentials.md)  
 
