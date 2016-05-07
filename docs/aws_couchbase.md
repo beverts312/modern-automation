@@ -21,3 +21,6 @@ boto - `pip install boto`
 |admin_user|[couchbase.yml](../ansible/group_vars/all/couchbase.yml)|Initial Admin user|
 |admin_password|[couchbase.yml](../ansible/group_vars/all/couchbase.yml)|Initial Admin password|
 |cluster_ram_quota|[couchbase.yml](../ansible/group_vars/all/couchbase.yml)|Cluster Ram Quota|
+
+## Usage  
+To create your cluster: `ansible-playbook aws_create_couchbase_cluster.yml --extra-vars="cf_stack_name=DESIRED_STACK_NAME"`  
