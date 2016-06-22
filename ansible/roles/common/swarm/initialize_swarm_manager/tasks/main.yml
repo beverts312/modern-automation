@@ -1,0 +1,4 @@
+---
+
+- name: Join initial master Swarm Cluster
+  shell: "docker swarm join --manager --listen-addr {{ inventory_hostname | dns_to_ip }}:2377 {{ group.swarm_master[0] | dns_to_ip }} --sercret {{ hostvars['localhost']['swarm_secret'] }}"

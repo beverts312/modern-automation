@@ -1,0 +1,36 @@
+---
+
+- hosts: localhost
+  connection: local
+  tasks:
+  - set_fact:
+      swarm_secret: "{{ (1 | generate_uuid).0 }}"
+
+- hosts: localhost
+  connection: local
+  roles:
+  - aws/create_new_swarm_base
+
+- hosts: launched
+  remote_user: core
+  gather_facts: False
+  roles:
+  - defunctzombie.coreos-bootstrap
+  
+- hosts: swarm_master
+  remote_user: core
+  sudo: True
+  roles:
+  - common/swarm/initialize_swarm_cluster
+
+- hosts: other_masters
+  remote_user: core
+  sudo: True
+  roles:
+  - common/swarm/initialize_swarm_manager
+
+- hosts: swarm_nodes
+  remote_user: core
+  sudo: True
+  roles:
+  - common/swarm/initialize_worker_node  

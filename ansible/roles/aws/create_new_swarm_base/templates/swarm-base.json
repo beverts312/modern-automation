@@ -1,0 +1,408 @@
+{ "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "CoreOS cluster running swarm",
+
+  "Mappings" : {
+      "VpcCidrs" : {
+        "eu-central-1" : { "vpc" : "10.0.0.0/16", "pubsubnet1" : "10.0.0.0/24", "pubsubnet2" : "10.0.1.0/24", "pubsubnet3" : "10.0.2.0/24" },
+        "eu-west-1" : { "vpc" : "10.0.0.0/16", "pubsubnet1" : "10.0.0.0/24", "pubsubnet2" : "10.0.1.0/24", "pubsubnet3" : "10.0.2.0/24" },
+        "us-east-1" : { "vpc" : "10.0.0.0/16", "pubsubnet1" : "10.0.0.0/24", "pubsubnet2" : "10.0.1.0/24", "pubsubnet3" : "10.0.2.0/24" },
+        "us-west-1" : { "vpc" : "10.0.0.0/16", "pubsubnet1" : "10.0.0.0/24", "pubsubnet2" : "10.0.1.0/24", "pubsubnet3" : "10.0.2.0/24" },
+        "us-west-2" : { "vpc" : "10.0.0.0/16", "pubsubnet1" : "10.0.0.0/24", "pubsubnet2" : "10.0.1.0/24", "pubsubnet3" : "10.0.2.0/24" }
+      },
+
+      "RegionMap" : {
+          "us-east-1" : { "AMI" : "{{ coreos_east_ami }}"},
+          "us-west-2" : { "AMI" : "{{ coreos_west_two_ami }}" },
+          "us-west-1" : { "AMI" : "{{ coreos_us_west_one_ami }}"},
+          "eu-central-1" : { "AMI" : "{{ coreos_eu_central_ami }}" },
+          "eu-west-1" : { "AMI" : "{{ coreos_eu_west_ami }}"}
+      }
+  },
+
+  "Parameters" : {
+    "MasterInstanceType" : {
+      "Type" : "String",
+      "Description" : "EC2 HVM instance type (t2.micro, m3.medium, etc).",
+      "AllowedValues" : [
+        "t2.nano","t2.micro","t2.small","t2.medium","t2.large","m4.large","m4.xlarge","m4.2xlarge","m4.4xlarge","m4.10xlarge","m3.medium",
+        "m3.large","m3.xlarge","m3.2xlarge","c4.large","c4.xlarge","c4.2xlarge","c4.4xlarge","c4.8xlarge","c3.large","c3.xlarge",
+        "c3.2xlarge","c3.4xlarge","c3.8xlarge","r3.large","r3.xlarge","r3.2xlarge","r3.4xlarge","r3.8xlarge","i2.xlarge",
+        "i2.2xlarge","i2.4xlarge","i2.8xlarge" ],
+      "ConstraintDescription" : "Must be a valid EC2 HVM instance type.",
+      "Default" : "t2.nano"
+    },
+
+    "NodeInstanceType" : {
+      "Type" : "String",
+      "Description" : "EC2 HVM instance type (t2.micro, m3.medium, etc).",
+      "AllowedValues" : [
+        "t2.nano","t2.micro","t2.small","t2.medium","t2.large","m4.large","m4.xlarge","m4.2xlarge","m4.4xlarge","m4.10xlarge","m3.medium",
+        "m3.large","m3.xlarge","m3.2xlarge","c4.large","c4.xlarge","c4.2xlarge","c4.4xlarge","c4.8xlarge","c3.large","c3.xlarge",
+        "c3.2xlarge","c3.4xlarge","c3.8xlarge","r3.large","r3.xlarge","r3.2xlarge","r3.4xlarge","r3.8xlarge","i2.xlarge",
+        "i2.2xlarge","i2.4xlarge","i2.8xlarge" ],
+      "ConstraintDescription" : "Must be a valid EC2 HVM instance type.",
+      "Default" : "t2.nano"
+    },
+
+    "NodeClusterSize" : {
+      "Type" : "Number",
+      "Default" : "3",
+      "MinValue" : "1",
+      "MaxValue" : "12",
+      "Description" : "Number of Swarm Node instances. Please set it a multiple of AZ count."
+    },
+
+    "MasterClusterSize" : {
+      "Type" : "Number",
+      "Default" : "3",
+      "MinValue" : "3",
+      "MaxValue" : "12",
+      "Description" : "Number of Swarm Master instances. Please make it same as the number of AZs."
+    },
+
+    "AllowSwarmMasterControlFrom" : {
+      "Type" : "String",
+      "Description" : "The net block (CIDR) from which SSH and docker on the master are available.",
+      "Default" : "0.0.0.0/0"
+    },
+
+    "KeyName" : {
+      "Type" : "AWS::EC2::KeyPair::KeyName",
+      "Description" : "The name of an EC2 Key Pair to allow SSH access to the master.",
+      "Default" : ""
+    },
+
+    "VpcAvailabilityZones" : {
+      "Type" : "CommaDelimitedList",
+      "Description" : "Comma-delimited list of three VPC availability zones in which nodes are created.",
+      "Default" : ""
+    }
+  },
+
+  "Resources" : {
+    "Vpc" : {
+      "Type" : "AWS::EC2::VPC",
+      "Properties" : {
+        "CidrBlock" : { "Fn::FindInMap" : [ "VpcCidrs", { "Ref" : "AWS::Region" }, "vpc" ] },
+        "EnableDnsSupport" : "true",
+        "EnableDnsHostnames" : "true",
+        "Tags": [
+          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "VPC"] ] } }
+        ]
+      }
+    },
+
+    "PubSubnetAz1" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "Vpc" },
+        "CidrBlock" : { "Fn::FindInMap" : [ "VpcCidrs", { "Ref" : "AWS::Region" }, "pubsubnet1" ] },
+        "AvailabilityZone" : { "Fn::Select" : [ "0", { "Ref" : "VpcAvailabilityZones" } ] },
+        "Tags": [
+          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "Subnet1"] ] } }
+        ]
+      }
+    },
+
+    "PubSubnetAz2" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "Vpc" },
+        "CidrBlock" : { "Fn::FindInMap" : [ "VpcCidrs", { "Ref" : "AWS::Region" }, "pubsubnet2" ] },
+        "AvailabilityZone" : { "Fn::Select" : [ "1", { "Ref" : "VpcAvailabilityZones" } ] },
+        "Tags": [
+          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "Subnet2"] ] } }
+        ]
+      }
+    },
+
+    "PubSubnetAz3" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "Vpc" },
+        "CidrBlock" : { "Fn::FindInMap" : [ "VpcCidrs", { "Ref" : "AWS::Region" }, "pubsubnet3" ] },
+        "AvailabilityZone" : { "Fn::Select" : [ "2", { "Ref" : "VpcAvailabilityZones" } ] },
+        "Tags": [
+          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "Subnet3"] ] } }
+        ]
+      }
+    },
+
+    "InternetGateway" : {
+      "Type" : "AWS::EC2::InternetGateway",
+      "Properties" : {
+        "Tags": [
+          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "IGW"] ] } }
+        ]
+      }
+    },
+
+    "AttachGateway" : {
+      "Type" : "AWS::EC2::VPCGatewayAttachment",
+      "Properties" : {
+        "VpcId" : { "Ref" : "Vpc" },
+        "InternetGatewayId" : { "Ref" : "InternetGateway" }
+      }
+    },
+
+    "RouteViaIgw" : {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "Vpc"}
+      }
+    },
+
+    "PublicRouteViaIgw" : {
+      "Type" : "AWS::EC2::Route",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "RouteViaIgw" },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "GatewayId" : { "Ref" : "InternetGateway" }
+      }
+    },
+
+    "PubSubnet1RouteTableAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PubSubnetAz1" },
+        "RouteTableId" : { "Ref" : "RouteViaIgw" }
+      }
+    },
+
+    "PubSubnet2RouteTableAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PubSubnetAz2" },
+        "RouteTableId" : { "Ref" : "RouteViaIgw" }
+      }
+    },
+
+    "PubSubnet3RouteTableAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PubSubnetAz3" },
+        "RouteTableId" : { "Ref" : "RouteViaIgw" }
+      }
+    },
+    "LoggingRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version" : "2012-10-17",
+          "Statement": [ {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": [ "ec2.amazonaws.com" ]
+            },
+            "Action": [ "sts:AssumeRole" ]
+          } ]
+        },
+        "Path": "/"
+      }
+    },
+    "LogRolePolicies": {
+      "Type": "AWS::IAM::Policy",
+        "Properties": {
+          "PolicyName": "root",
+          "PolicyDocument": {
+          "Version" : "2012-10-17",
+          "Statement": [   {
+            "Action": [
+              "logs:CreateLogStream",
+              "logs:PutLogEvents"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+          } ]
+        },
+        "Roles": [ {
+          "Ref": "LoggingRole"
+        } ]
+      }
+    },
+    "LoggingProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [ {
+          "Ref": "LoggingRole"
+        } ]
+      }
+    },
+    "MasterSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Master CoreOS SecurityGroup",
+        "VpcId" : { "Ref" : "Vpc" },
+        "SecurityGroupIngress" : [
+          { "IpProtocol" : "tcp", "FromPort" : "2375", "ToPort" : "2375", "CidrIp" : { "Fn::GetAtt" : [ "Vpc", "CidrBlock" ] } },
+          { "IpProtocol" : "tcp", "FromPort" : "4000", "ToPort" : "4000", "CidrIp" : { "Ref" : "AllowSwarmMasterControlFrom" } }
+        ],
+        "Tags": [
+          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "Master-SG" ] ] } }
+        ]
+      }
+    },
+    "ConsulSecurityGroup" : {
+      "DependsOn": "MasterSecurityGroup",
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Consul SecurityGroup",
+        "VpcId" : { "Ref" : "Vpc" },
+        "SecurityGroupIngress" : [
+          { "IpProtocol" : "tcp", "FromPort" : "8500", "ToPort" : "8500", "CidrIp" : "0.0.0.0/0" },
+          { "IpProtocol" : "tcp", "FromPort" : "8300", "ToPort" : "8300", "CidrIp" : "0.0.0.0/0" },
+          { "IpProtocol" : "tcp", "FromPort" : "8301", "ToPort" : "8301", "CidrIp" : "0.0.0.0/0" },
+          { "IpProtocol" : "udp", "FromPort" : "8301", "ToPort" : "8301", "CidrIp" : "0.0.0.0/0" },
+          { "IpProtocol" : "tcp", "FromPort" : "8302", "ToPort" : "8302", "CidrIp" : "0.0.0.0/0" },
+          { "IpProtocol" : "udp", "FromPort" : "8302", "ToPort" : "8302", "CidrIp" : "0.0.0.0/0" },
+          { "IpProtocol" : "tcp", "FromPort" : "8400", "ToPort" : "8400", "CidrIp" : "0.0.0.0/0" },
+          { "IpProtocol" : "udp", "FromPort" : "53", "ToPort" : "53", "CidrIp" : "0.0.0.0/0" }
+        ],
+        "Tags": [
+          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "Master-SG" ] ] } }
+        ]
+      }
+    },
+    "NodeSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Node SecurityGroup",
+        "VpcId" : { "Ref" : "Vpc" },
+        "SecurityGroupIngress" : [
+          { "IpProtocol" : "tcp", "FromPort" : "30000", "ToPort" : "40000", "CidrIp" : "0.0.0.0/0" }          
+        ],
+        "Tags": [
+          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "Node-SG" ] ] } }
+        ]
+      }
+    },
+
+    "TemporarySecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "SSH SecurityGroup",
+        "VpcId" : { "Ref" : "Vpc" },
+        "SecurityGroupIngress" : [
+          { "IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "CidrIp" : "0.0.0.0/0" }
+        ],
+        "Tags": [
+          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "Node-SG" ] ] } }
+        ]
+      }
+    },
+
+    "SwarmSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Swarm Security Group",
+        "VpcId" : { "Ref" : "Vpc" },
+        "Tags": [
+          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "Node-SG" ] ] } }
+        ]
+      }
+    },
+  
+    "NodeIngress2377" : {
+      "DependsOn" : "SwarmSecurityGroup",
+      "Type" : "AWS::EC2::SecurityGroupIngress",
+      "Properties" : {
+        "GroupId" : {
+          "Fn::GetAtt" : [ "SwarmSecurityGroup", "GroupId" ]
+        },
+        "IpProtocol" : "tcp",
+        "FromPort" : "2377",
+        "ToPort" : "2377",
+        "CidrIp" : { "Fn::GetAtt" : [ "Vpc", "CidrBlock" ] }
+      }
+    },
+    
+    "NodeIngress7946" : {
+      "DependsOn" : "SwarmSecurityGroup",
+      "Type" : "AWS::EC2::SecurityGroupIngress",
+      "Properties" : {
+        "GroupId" : {
+          "Fn::GetAtt" : [ "SwarmSecurityGroup", "GroupId" ]
+        },
+        "IpProtocol" : "tcp",
+        "FromPort" : "7946",
+        "ToPort" : "7946",
+        "CidrIp" : { "Fn::GetAtt" : [ "Vpc", "CidrBlock" ] }
+      }
+    },
+
+    "NodeIngress4789" : {
+      "DependsOn" : "SwarmSecurityGroup",
+      "Type" : "AWS::EC2::SecurityGroupIngress",
+      "Properties" : {
+        "GroupId" : {
+          "Fn::GetAtt" : [ "SwarmSecurityGroup", "GroupId" ]
+        },
+        "IpProtocol" : "tcp",
+        "FromPort" : "4789",
+        "ToPort" : "4789",
+        "CidrIp" : { "Fn::GetAtt" : [ "Vpc", "CidrBlock" ] }
+      }
+    },
+
+    "MasterLaunchConfiguration" : {
+      "Type" : "AWS::AutoScaling::LaunchConfiguration",
+      "Properties" : {
+        "ImageId" : { "Fn::FindInMap" : [ "RegionMap", { "Ref" : "AWS::Region" }, "AMI" ] },
+        "InstanceType" : { "Ref" : "MasterInstanceType"},
+        "AssociatePublicIpAddress" : true,
+        "KeyName" : { "Ref" : "KeyName"},
+        "SecurityGroups" : [ { "Ref" : "SwarmSecurityGroup"}, { "Ref" : "TemporarySecurityGroup"} ],
+        "IamInstanceProfile": { "Ref" : "LoggingProfile"}
+      }
+    },
+
+    "NodeLaunchConfiguration" : {
+      "DependsOn" : [ "InternetGateway" ],
+      "Type" : "AWS::AutoScaling::LaunchConfiguration",
+      "Properties" : {
+        "ImageId" : { "Fn::FindInMap" : [ "RegionMap", { "Ref" : "AWS::Region" }, "AMI" ] },
+        "InstanceType" : { "Ref" : "NodeInstanceType"},
+        "AssociatePublicIpAddress" : true,
+        "KeyName" : { "Ref" : "KeyName"},
+        "SecurityGroups" : [ { "Ref" : "NodeSecurityGroup" }, { "Ref": "SwarmSecurityGroup" }, { "Ref" : "TemporarySecurityGroup"} ],
+        "IamInstanceProfile": { "Ref" : "LoggingProfile"}
+      }
+    },
+
+    "MasterAutoScalingGroup" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "AvailabilityZones" :
+          [ { "Fn::Select" : [ "0", { "Ref" : "VpcAvailabilityZones" } ] }, { "Fn::Select" : [ "1", { "Ref" : "VpcAvailabilityZones" } ] }, { "Fn::Select" : [ "2", { "Ref" : "VpcAvailabilityZones" } ] } ],
+        "VPCZoneIdentifier" : [ { "Fn::Join" : [",", [ { "Ref" : "PubSubnetAz1" }, { "Ref" : "PubSubnetAz2" }, { "Ref" : "PubSubnetAz3" } ] ] } ],
+        "LaunchConfigurationName" : { "Ref" : "MasterLaunchConfiguration" },
+        "LoadBalancerNames" : [ { "Ref" : "MasterLoadBalancer" } ],
+        "MinSize" : "1",
+        "MaxSize" : "5",
+        "DesiredCapacity" : { "Ref" : "MasterClusterSize"},
+        "Tags": [
+          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "MasterNode" ] ] }, "PropagateAtLaunch" : "true" }
+        ]
+      }
+    },
+
+    "NodeAutoScalingGroup" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "AvailabilityZones" :
+          [ { "Fn::Select" : [ "0", { "Ref" : "VpcAvailabilityZones" } ] }, { "Fn::Select" : [ "1", { "Ref" : "VpcAvailabilityZones" } ] }, { "Fn::Select" : [ "2", { "Ref" : "VpcAvailabilityZones" } ] } ],
+        "VPCZoneIdentifier" : [ { "Fn::Join" : [",", [ { "Ref" : "PubSubnetAz1" }, { "Ref" : "PubSubnetAz2" }, { "Ref" : "PubSubnetAz3" } ] ] } ],
+        "LaunchConfigurationName" : { "Ref" : "NodeLaunchConfiguration" },
+        "MinSize" : "1",
+        "MaxSize" : "12",
+        "DesiredCapacity" : { "Ref" : "NodeClusterSize"},
+        "Tags": [
+          { "Key" : "Name", "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "SwarmNode" ] ] }, "PropagateAtLaunch" : "true" }
+        ]
+      }
+    }
+  },    
+  "Outputs" : {  }
+}
