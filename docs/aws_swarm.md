@@ -1,3 +1,5 @@
+THIS PLAYBOOK WILL NOT WORK UNTIL A VERSION OF COREOS IS RELEASED WITH DOCKER 1.12
+
 ## Description  
 Creates a swarm cluster on AWS leveraging a Cloud Formation Template.  
 All the instances run CoreOS.  
