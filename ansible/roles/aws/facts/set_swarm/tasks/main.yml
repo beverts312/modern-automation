@@ -1,0 +1,57 @@
+---
+
+- name: Get Master Nodes Info
+  ec2_remote_facts:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ cf_region }}"
+    filters:
+      instance-state-name: running
+      "tag:Name": "{{ cf_stack_name }}-MasterNode"
+  register: master_nodes
+  
+- name: Get Swarm Nodes Info
+  ec2_remote_facts:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ cf_region }}"  
+    filters:
+      instance-state-name: running
+      "tag:Name": "{{ cf_stack_name }}-SwarmNode"
+  register: swarm_nodes
+    
+- set_fact:    
+    expected_worker_node_count: "{{ number_of_swarm_nodes|int }}"
+    master_node_ips: "{% for item in master_nodes.instances %}[ '{{ item.public_dns_name }}' ]{% if not loop.last %} + {% endif %}{% endfor%}"  
+    other_master_node_ips: "{% for item in master_nodes.instances %}{% if not loop.first %}[ '{{ item.public_dns_name }}' ]{% endif %}{% if not loop.last %} + {% endif %}{% endfor%}"  
+    node_ips: "{% for item in swarm_nodes.instances %}[ '{{ item.public_dns_name }}' ]{% if not loop.last %} + {% endif %}{% endfor%}"  
+
+- name: Create First Masters group
+  add_host: hostname={{ master_node_ips.0 }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=first_master
+
+- name: Create Other Masters group
+  add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=other_masters
+  with_items: other_master_node_ips
+
+- name: Create Masters group
+  add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=master_nodes
+  with_items: master_node_ips
+  
+- name: Create Node group
+  add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=worker_nodes
+  with_items: node_ips
+
+- name: Add masters to launched group
+  add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=launched
+  with_items: master_node_ips
+  
+- name: Add swarm nodes to launched group
+  add_host: hostname={{ item }} ansible_python_interpreter="PATH=/home/core/bin:$PATH python" groupname=launched
+  with_items: node_ips
+
+- name: wait for instances to listen on port:22
+  wait_for:
+    state: started
+    host: "{{ item }}"
+    port: 22
+  with_items: groups.launched

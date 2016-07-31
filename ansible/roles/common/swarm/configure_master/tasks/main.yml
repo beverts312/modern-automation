@@ -1,0 +1,7 @@
+---
+
+- name: Join cluster
+  shell: "docker swarm join --token {{ hostvars[groups.swarm_master[0]]['manager_token']}} {{ groups.swarm_master[0] | dns_to_ip }}:2377"
+
+- name: Set availability to drain
+  shell: "docker node update --availability=drain $(docker node ls | grep '*' | awk '{print $1;}')"

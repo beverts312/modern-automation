@@ -1,0 +1,4 @@
+---
+
+- name: Join cluster
+  shell: "docker swarm join --token {{ hostvars[groups.swarm_master[0]]['worker_token']}} {{ groups.swarm_master[0] | dns_to_ip }}:2377"

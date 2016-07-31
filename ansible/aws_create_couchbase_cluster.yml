@@ -4,5 +4,5 @@
   connection: local
   roles:
   - aws/create_couchbase_cf
-  - aws/set_couchbase_facts
+  - aws/facts/set_couchbase
   - common/configure_couchbase_cluster
