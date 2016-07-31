@@ -1,0 +1,6 @@
+---
+
+- hosts: localhost
+  connection: local
+  roles:
+  - aws/create_workshop_env

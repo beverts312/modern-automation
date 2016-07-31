@@ -1,0 +1,7 @@
+---
+#Ubuntu AMIs
+ubuntu_east_ami: ami-cf68e0d8
+ubuntu_west_two_ami: ami-191fd379
+ubuntu_us_west_one_ami:	ami-e59bda85
+ubuntu_eu_central_ami: ami-cbee1aa4
+ubuntu_eu_west_ami: ami-1967056a

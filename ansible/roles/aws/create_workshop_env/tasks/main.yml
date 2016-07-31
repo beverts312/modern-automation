@@ -1,0 +1,25 @@
+---
+
+- set_fact:
+    cf_template: "{{ lookup('template', 'workshop.json') }}"
+
+- name: Save the generated CF template file
+  local_action: copy content="{{ cf_template }}" dest=./cf_template
+
+- name: Create a new Stack using the given params and template
+  cloudformation:
+    state: "present"
+    stack_name: "{{ cf_stack_name }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    template: "cf_template"
+    region: "{{ cf_region }}"
+    template_parameters:
+      InstanceType: "{{ cf_instance_type }}"
+      ClusterSize: "{{ cf_cluster_size }}"
+      KeyName: "{{ aws_keypair }}"
+      VpcAvailabilityZones: "{{ cf_vpc_azs }}"
+    tags:
+      Stack: "ansible-cloudformation"
+      Owner: "{{ aws_owner }}"
+  register: stack_creation_response

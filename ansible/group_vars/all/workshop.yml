@@ -1,0 +1,4 @@
+---
+
+cf_instance_type: t2.micro
+cf_cluster_size: 3
