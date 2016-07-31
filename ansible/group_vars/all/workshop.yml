@@ -1,4 +1,7 @@
 ---
 
-cf_instance_type: t2.micro
-cf_cluster_size: 3
+workshop_instance_size: t2.micro
+workshop_count: 3
+workshop_ami: ami-1967056a
+workshop_sg:
+workshop_key:
