@@ -1,7 +1,15 @@
 ---
 #CoreOS AMIs
+<<<<<<< HEAD
 coreos_east_ami: ami-e3f561f4
 coreos_west_two_ami: ami-5231fe32
 coreos_us_west_one_ami:	ami-53155533
 coreos_eu_central_ami: 	ami-1560947a
 coreos_eu_west_ami: ami-e63e5295
+=======
+coreos_east_ami: ami-6d4f8900
+coreos_west_two_ami: ami-184a8f78
+coreos_us_west_one_ami: ami-73c28713
+coreos_eu_central_ami: ami-f258b19ds
+coreos_eu_west_ami: ami-7a46d809
+>>>>>>> 3cdeee1e6977591c9c53afcfe9b640822c0fde52
