@@ -1,0 +1,6 @@
+{
+  "ID": "{{ kv_acl }}",
+  "Name": "KV ACL",
+  "Type": "client",
+  "Rules": "{ \"key\": { \"\": {\"policy\": \"write\"} } }"
+}

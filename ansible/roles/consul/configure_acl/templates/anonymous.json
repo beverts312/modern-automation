@@ -1,0 +1,6 @@
+{
+  "ID": "anonymous",
+  "Name": "Anonymous Token",
+  "Type": "client",
+  "Rules": "{ \"key\": { \"\": {\"policy\": \"read\"} },  \"service\": { \"\": {\"policy\": \"read\"} } }"
+}

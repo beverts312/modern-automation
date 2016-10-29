@@ -1,0 +1,55 @@
+---
+
+- name: Generate Keys
+  set_fact:
+    acls: "{{ 3 | generate_uuid }}"
+    
+- name: Assign Keys
+  set_fact:
+    kv_acl: "{{ acls.0 }}"
+    service_acl: "{{ acls.1 }}"
+    client_acl: "{{ acls.2 }}"
+        
+- name: Set Anonymous Policy
+  uri:
+    url: "http://{{ master_lb }}:8500/v1/acl/update?token={{ master_acl }}"
+    method: PUT
+    return_content: yes
+    HEADER_Content-Type: "application/json"
+    body_format: json
+    body: "{{ lookup('template', 'anonymous.json', convert_data=False) }}"
+    validate_certs: no
+    timeout: 50
+    
+- name: Create Service Key
+  uri:
+    url: "http://{{ master_lb }}:8500/v1/acl/create?token={{ master_acl }}"
+    method: PUT
+    return_content: yes
+    HEADER_Content-Type: "application/json"
+    body_format: json
+    body: "{{ lookup('template', 'service.json', convert_data=False) }}"
+    validate_certs: no
+    timeout: 50
+    
+- name: Create Service Key
+  uri:
+    url: "http://{{ master_lb }}:8500/v1/acl/create?token={{ master_acl }}"
+    method: PUT
+    return_content: yes
+    HEADER_Content-Type: "application/json"
+    body_format: json
+    body: "{{ lookup('template', 'kv.json', convert_data=False) }}"
+    validate_certs: no
+    timeout: 50
+    
+- name: Create Client Key
+  uri:
+    url: "http://{{ master_lb }}:8500/v1/acl/create?token={{ master_acl }}"
+    method: PUT
+    return_content: yes
+    HEADER_Content-Type: "application/json"
+    body_format: json
+    body: "{{ lookup('template', 'client.json', convert_data=False) }}"
+    validate_certs: no
+    timeout: 50

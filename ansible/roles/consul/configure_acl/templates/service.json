@@ -1,0 +1,6 @@
+{
+  "ID": "{{ service_acl }}",
+  "Name": "Service ACL",
+  "Type": "client",
+  "Rules": "{ \"service\": { \"\": {\"policy\": \"write\"} } }"
+}

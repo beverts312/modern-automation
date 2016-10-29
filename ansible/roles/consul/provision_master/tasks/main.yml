@@ -1,0 +1,16 @@
+---
+
+- name: Build Container Strings
+  set_fact:
+    consul_run_args: "--hostname {{ inventory_hostname }} --restart=always -d -v /data:/data -e SECURE=true -e ACL_MASTER_TOKEN={{hostvars['localhost']['master_acl']}}"
+    consul_ports: "-p 8300:8300 -p 8301:8301 -p 8301:8301/udp -p 8302:8302 -p 8302:8302/udp -p 8400:8400 -p 8500:8500 -p 53:53/udp"
+    consul_args: "-advertise {{ inventory_hostname|dns_to_ip }} {% for cur_master in groups.other_masters %}{% if inventory_hostname!=cur_master %} -retry-join {{ cur_master|dns_to_ip}} {% endif %}{% endfor %}" 
+    log_str: ""
+
+- name: Set Log String for Splunk
+  set_fact:
+    log_str: "{{ hostvars['localhost']['splunk_str'] }}"
+  when: swarm_logs == 'splunk' or swarm_logs == 'splunk_prod'
+  
+- name: Start Consul container
+  shell: "docker run {{ log_str }} {{ consul_ports }} {{ consul_run_args }}  {{ swarm_image_repo }}/consul:{{ consul_version }} {{ consul_args }}"

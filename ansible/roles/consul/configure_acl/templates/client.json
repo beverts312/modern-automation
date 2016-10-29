@@ -1,0 +1,6 @@
+{
+  "ID": "{{ client_acl }}",
+  "Name": "Client ACL",
+  "Type": "client",
+  "Rules": "{ \"key\": { \"_rexec/\": {\"policy\": \"write\"} } }"
+}
