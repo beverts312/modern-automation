@@ -1,0 +1,20 @@
+---
+
+- name: Initialize Swarm Cluster
+  shell: "docker swarm init"
+
+- name: Get manager token
+  shell: "docker swarm join-token -q manager"
+  register: manager_out
+
+- name: Get worker token
+  shell: "docker swarm join-token -q worker"
+  register: worker_out
+
+- name: Set tokens
+  set_fact:
+    manager_token: "{{manager_out.stdout}}"
+    worker_token: "{{worker_out.stdout}}"
+    
+- name: Set Node availability to drain
+  shell: "docker node update --availability=drain $(docker node ls | grep '*' | awk '{print $1;}')"

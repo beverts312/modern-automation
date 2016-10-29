@@ -1,0 +1,16 @@
+---
+
+- set_fact:
+    docker_config: "{{ lookup('template', 'docker') }}"
+
+- name: Update docker upstart file
+  copy:
+    content: "{{ docker_config }}"
+    dest: /etc/default/docker
+
+- name: Restart docker
+  shell: "service docker restart"
+
+- name: Open needed ports
+  command: ufw allow 2375
+  sudo: yes

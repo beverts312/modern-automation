@@ -1,0 +1,18 @@
+---
+
+- name: Set Default forwarding policy
+  lineinfile:
+    dest: /etc/default/ufw
+    regexp: ^DEFAULT_FORWARD_POLICY
+    line: DEFAULT_FORWARD_POLICY="ACCEPT"
+  when: inventory_hostname != "localhost"
+
+- name: Reload
+  command: ufw reload
+  sudo: yes
+  when: inventory_hostname != "localhost"
+
+- name: Open needed ports
+  command: ufw allow {{ item }}
+  sudo: yes
+  with_items: [2377, 7946, 4789]

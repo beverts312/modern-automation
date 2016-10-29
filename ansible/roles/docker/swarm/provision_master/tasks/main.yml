@@ -1,0 +1,21 @@
+---
+
+- name: Set IP
+  set_fact:
+    advertise_addr: "{{ inventory_hostname | dns_to_ip }}"
+
+- name: Get IP (localhost)
+  shell: "ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'"
+  register: ip_output
+  when: inventory_hostname == "localhost"
+
+- name: Set IP (localhost)
+  set_fact:
+    advertise_addr: "{{ ip_output.stdout }}"
+  when: inventory_hostname == "localhost"
+
+- name: Join initial master
+  shell: "docker swarm join --token {{ hostvars[groups.swarm_master[0]]['manager_token'] }} {{ groups.swarm_master[0] }}:2377"
+
+- name: Set Node availability to drain
+  shell: "docker node update --availability=drain $(docker node ls | grep '*' | awk '{print $1;}')"

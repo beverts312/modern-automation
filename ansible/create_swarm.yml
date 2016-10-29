@@ -1,0 +1,32 @@
+---
+
+- hosts: launched
+  sudo: true
+  roles:
+  - docker/swarm/configure_firewall
+
+- hosts: localhost
+  connection: local
+  roles:
+  - { role: certs/create_certs, when: enable_remote_swarm == 'yes' }
+  
+- hosts: swarm_master,other_masters
+  sudo: true
+  roles:
+  - { role: certs/place_certs, when: enable_remote_swarm == 'yes' }
+  - { role: docker/enable_tls, when: enable_remote_swarm == 'yes' }
+
+- hosts: swarm_master
+  sudo: true
+  roles:
+  - common/swarm/provision_first_master
+
+- hosts: other_masters
+  sudo: true
+  roles:
+  - common/swarm/provision_master
+
+- hosts: swarm_nodes
+  sudo: true
+  roles:
+  - common/swarm/provision_worker
