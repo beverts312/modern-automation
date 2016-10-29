@@ -5,4 +5,4 @@
   roles:
   - aws/create_couchbase_cf
   - aws/facts/set_couchbase
-  - common/configure_couchbase_cluster
+  - couchbase/configure_cluster
