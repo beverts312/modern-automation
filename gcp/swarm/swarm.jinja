@@ -1,0 +1,16 @@
+
+resources:
+- name: masters
+  type: masters.jinja
+  properties:
+    masterCount: {{ properties["masterCount"] }}
+    zone: {{ properties["zone"] }}
+    image: {{ properties["image"] }}
+- name: workers
+  type: workers.jinja
+  properties:
+    workerCount: {{ properties["workerCount"] }}
+    zone: {{ properties["zone"] }}
+    image: {{ properties["image"] }}
+- name: network
+  type: network.jinja

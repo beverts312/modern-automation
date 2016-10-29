@@ -1,0 +1,33 @@
+info:
+  title: Swarm Base
+  author: Bailey Everts
+  description: Creates a set of VMs ready for swarm to be configured on top of them
+
+imports:
+  - path: masters.jinja
+  - path: workers.jinja
+  - path: network.jinja
+
+required:
+  - zone
+  - masterCount
+  - workerCount
+  - image
+  
+properties:
+  zone:
+    description: Zone to create the resources in.
+    type: string
+    default: us-central1-f
+  masterCount:
+    description: How many master VMs to set up.
+    type: integer
+    default: 2
+  workerCount:
+    description: How many master VMs to set up.
+    type: integer
+    default: 2
+  image:
+    description: What VM image to use
+    type: string
+    default: projects/ubuntu-os-cloud/global/images/ubuntu-1404-trusty-v20160809a

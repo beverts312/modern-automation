@@ -1,0 +1,11 @@
+imports:
+- path: swarm.jinja
+
+resources:
+- name: swarm-cluster
+  type: swarm.jinja
+  properties:
+    zone: us-central1-f
+    masterCount: 2
+    workerCount: 2
+    image: projects/ubuntu-os-cloud/global/images/ubuntu-1404-trusty-v20160809a

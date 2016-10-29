@@ -1,0 +1,29 @@
+resources:
+{% for replica in range(0, properties["workerCount"]) %}
+- type: compute.v1.instance
+  name: {{ env["deployment"] + "-worker-" + replica|string }}
+  properties:
+    zone: {{ properties["zone"] }}
+    machineType: https://www.googleapis.com/compute/v1/projects/{{ env["project"] }}/zones/{{ properties["zone"] }}/machineTypes/f1-micro
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: https://www.googleapis.com/compute/v1/{{ properties["image"] }}
+    networkInterfaces:
+    - network: $(ref.{{ env["deployment"] + "-worker-network" }}.selfLink)    
+      accessConfigs:
+      - name: External NAT
+        type: ONE_TO_ONE_NAT
+    metadata:
+      items:
+      - key: startup-script
+        value: |
+          #! /bin/bash
+          sudo apt-get update
+          sudo apt-get install -y python
+          curl -fsSL https://test.docker.com/ | sh
+          sudo service docker start
+{% endfor %}

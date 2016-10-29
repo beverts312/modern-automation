@@ -1,0 +1,26 @@
+
+    resources:
+- name: {{ env["deployment"] + "-master-network" }}
+  type: compute.v1.network
+  properties:
+    IPv4Range: 10.0.0.0/24
+- name: {{ env["deployment"] + "-worker-network" }}
+  type: compute.v1.network
+  properties:
+    IPv4Range: 10.0.1.0/24
+- type: compute.v1.firewall
+  name: {{ env["deployment"] + "-master-firewall" }}
+  properties:
+    network: $(ref.{{ env["deployment"] + "-master-network" }}.selfLink)
+    sourceRanges: [ "0.0.0.0/0" ]
+    allowed:
+    - IPProtocol: tcp
+      ports:  ["2375","22","2377","7946","4789"]
+- type: compute.v1.firewall
+  name: {{ env["deployment"] + "-worker-firewall" }}
+  properties:
+    network: $(ref.{{ env["deployment"] + "-worker-network" }}.selfLink)
+    sourceRanges: [ "0.0.0.0/0" ]
+    allowed:
+    - IPProtocol: tcp
+      ports:  ["30000-32000","22","2377","7946","4789"]
