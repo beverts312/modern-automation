@@ -9,8 +9,6 @@
   - name: Set secrets
     set_fact:
       master_acl: "{{ secrets.0 }}"
-
-# TODO: Install docker in cloud_init
      
 - hosts: consul_master
   roles:

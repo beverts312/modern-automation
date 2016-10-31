@@ -1,0 +1,12 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "sshPublicKey": {
+      "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsrB3ZkgL8jjtZmW/wUwROmE3UaW1Xlq02iYI+rBx7KOO9hHP2Dw0BMrjPFfLXSYZmu2y39zBFiM1dtcZagX76ZVnrV78HxjLGrUKD7hX/ac8k9ih7vNMDM3KClMFkqI+qpWWw6iuPELet67khwfzncaLxQTU3Cu9nc3LwPlq0qRc2X4K2/SrG6GuptGLkkZ4mcLEtsCtaGnIN+DYGW9SFK4pt2f33NOabJRZ367hcqqwbJPLhqFXxAA5zaeG21WNyvqeN2B3vvxf4/oFKPQ3TBoBRZzzCMItYpqpw7WicKWYm11aXBe6p21rUsYPGjcnX8S3lc1DxE6QaAO6enBFH"
+    },
+    "nodeCount": {
+      "value": 3
+    }
+  }
+}
