@@ -2,8 +2,8 @@
 
 | Name                     | AWS | Azure | Google |
 |--------------------------|:---:|:-----:|:------:|
-| Create Swarm Cluster     | | [X](../../azure/swarm/createSwarm.sh) | [X](../../gcp/swarm/createSwarm.sh) | 
-| Create Consul Cluster    | |   |   |  
+| Create Swarm Cluster     | | [X](../../azure/swarm/create-swarm.sh) | [X](../../gcp/swarm/create-swarm.sh) | 
+| Create Consul Cluster    | | [X*](../../azure/consul/create-consul.sh)   |   |  
 | Create Couchbase Cluster | |   |   |
 
 ### Using AWS Scripts  
