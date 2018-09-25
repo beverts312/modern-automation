@@ -1,0 +1,9 @@
+- name: Update Configuraion
+  copy:
+    content: "{{ lookup('template', 'collectd.conf', convert_data=False) }}"
+    dest: "/etc/collectd/collectd.conf"
+
+- name: Restart Collectd
+  service:
+    name: collectd
+    state: restarted

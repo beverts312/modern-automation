@@ -1,0 +1,4 @@
+- name: Update repositories cache and install collectd
+  apt:
+    name: collectd
+    update_cache: yes
