@@ -1,6 +1,6 @@
 ---
 
-- hosts: launched
+- hosts: all
   sudo: true
   roles:
   - collectd/install
