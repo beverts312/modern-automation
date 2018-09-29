@@ -3,6 +3,12 @@
     content: "{{ lookup('template', 'collectd.conf', convert_data=False) }}"
     dest: "/etc/collectd/collectd.conf"
 
+- name: Deploy Docker script
+  copy:
+    content: "{{ lookup('template', 'docker.sh', convert_data=False) }}"
+    dest: "/etc/collectd/docker.sh"
+  when: collect_docker == true
+
 - name: Restart Collectd
   service:
     name: collectd

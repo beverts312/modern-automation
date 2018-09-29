@@ -2,3 +2,5 @@
 
 graphite_host: localhost
 graphite_port: 2003
+collect_docker: true
+docker_user: ubuntu
