@@ -9,6 +9,12 @@
     dest: "/etc/collectd/docker.sh"
   when: collect_docker == true
 
+- name: 
+  file:
+    path: /etc/collectd/docker.sh
+    mode: 0777
+  when: collect_docker == true
+
 - name: Restart Collectd
   service:
     name: collectd
