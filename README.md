@@ -5,4 +5,4 @@
 * Configure collectd
 * Old
   * Create Swarm Cluster
-  * Create Couchbase Cluster
+  * [Create Couchbase Cluster](./docs/aws-couchbase.md)
