@@ -2,7 +2,7 @@
 
 * [Docker collectd script](./docs/collectd.md)
 * Create Consul Cluster
-* Configure collectd
+* [Configure collectd](./docs/collectd.md)
 * Old
   * Create Swarm Cluster
   * [Create Couchbase Cluster](./docs/aws-couchbase.md)
