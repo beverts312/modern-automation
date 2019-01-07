@@ -1,0 +1,13 @@
+---
+
+- name: Get Aliases
+  get_url:
+    url: https://raw.githubusercontent.com/beverts312/dev-env/master/bash/.bash_profile
+    dest: "{{ special_profile_path }}"
+    mode: 0600
+
+- name: Source special profile in main profile
+  lineinfile:
+    path: "{{ default_profile_path }}"
+    line: "source {{ special_profile_path }}"
+    state: present
